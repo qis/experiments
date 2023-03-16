@@ -1,0 +1,11 @@
+[requires]
+boost/[*]
+
+[options]
+boost:shared=True
+
+[generators]
+cmake_find_package
+
+[imports]
+bin, *.dll -> ./bin
