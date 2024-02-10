@@ -28,9 +28,7 @@ list_node* simple(std::vector<list_node*>& lists)
     if (it == lists.end() || !*it) {
       return nullptr;
     }
-    auto ln = std::exchange(*it, (*it)->next);
-    ln->next = nullptr;
-    return ln;
+    return std::exchange(*it, (*it)->next);
   };
 
   // Get first node.
