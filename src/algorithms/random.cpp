@@ -1,9 +1,9 @@
-#include "common.hpp"
+#include <common.hpp>
 #include <format>
 #include <random>
 #include <string>
 
-namespace experiments {
+namespace algorithms {
 
 std::string random()
 {
@@ -19,18 +19,18 @@ std::string random()
   return result;
 }
 
-}  // namespace experiments
+}  // namespace algorithms
 
 static void random(benchmark::State& state)
 {
   for (auto _ : state) {
-    auto str = experiments::random();
+    auto str = algorithms::random();
     benchmark::DoNotOptimize(str);
   }
 }
 BENCHMARK(random);
 
-TEST_CASE("experiments::random")
+TEST_CASE("algorithms::random")
 {
-  REQUIRE(!experiments::random().empty());
+  REQUIRE(!algorithms::random().empty());
 }

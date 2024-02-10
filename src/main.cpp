@@ -1,12 +1,11 @@
 #include "main.hpp"
-#include <format>
 #include <cstdio>
 #include <cstdlib>
 
 int main(int argc, char* argv[])
 {
   try {
-    std::puts(std::format("{}", test()).data());
+    test();
   }
   catch (const std::exception& e) {
     std::fputs(e.what(), stderr);

@@ -1,6 +1,15 @@
-#pragma once
-#include <string>
+#include <iostream>
 
-std::string test() {
-  return "test";
+namespace algorithms::example {
+
+void test()
+{
+  std::cout << "test" << std::endl;
+}
+
+}  // namespace algorithms::example
+
+void test()
+{
+  algorithms::example::test();
 }

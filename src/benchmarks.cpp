@@ -1,5 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT
-#include <experiments/common.hpp>
+#include <common.hpp>
 
 int main(int argc, char** argv)
 {

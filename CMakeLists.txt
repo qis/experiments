@@ -6,7 +6,7 @@ add_executable(main src/main.cpp src/main.manifest src/main.rc)
 set_target_properties(main PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 # Objects
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/${PROJECT_NAME}/*.[hc]pp)
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/algorithms/*.[hc]pp)
 add_library(objects OBJECT ${sources})
 
 # Properties
