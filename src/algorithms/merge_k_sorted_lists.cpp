@@ -50,7 +50,7 @@ list_node* simple(std::vector<list_node*>& lists)
 #include <boost/container/static_vector.hpp>
 #include <common.hpp>
 
-TEST_CASE("algorithms::merge_k_sorted_lists::merge")
+TEST_CASE("algorithms::merge_k_sorted_lists::simple")
 {
   using algorithms::merge_k_sorted_lists::list_node;
 
