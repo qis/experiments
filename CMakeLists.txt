@@ -10,24 +10,20 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/${PROJECT_NAME}/*.[hc]pp)
 add_library(objects OBJECT ${sources})
 
 # Properties
-target_compile_features(main PRIVATE cxx_std_23)
-target_compile_features(objects PUBLIC cxx_std_23)
+foreach(name main objects)
+  target_compile_features(${name} PUBLIC cxx_std_23)
+  target_include_directories(${name} PUBLIC src)
 
-target_include_directories(main PRIVATE src)
-target_include_directories(objects PUBLIC src)
+  if(MSVC)
+    target_compile_options(${name} PUBLIC /arch:AVX2)
+  else()
+    target_compile_options(${name} PUBLIC -mavx2)
+  endif()
 
-if(MSVC)
-  target_compile_options(main PRIVATE /arch:AVX2)
-  target_compile_options(objects PUBLIC /arch:AVX2)
-else()
-  target_compile_options(main PRIVATE -mavx2)
-  target_compile_options(objects PUBLIC -mavx2)
-endif()
-
-if(WIN32)
-  target_compile_definitions(main PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-  target_compile_definitions(objects PUBLIC NOMINMAX WIN32_LEAN_AND_MEAN)
-endif()
+  if(WIN32)
+    target_compile_definitions(${name} PUBLIC NOMINMAX WIN32_LEAN_AND_MEAN)
+  endif()
+endforeach()
 
 # Dependencies
 find_package(Boost REQUIRED COMPONENTS headers json)
