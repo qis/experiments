@@ -1,8 +1,9 @@
+#include "common.hpp"
 #include <format>
 #include <random>
 #include <string>
 
-namespace application {
+namespace experiments {
 
 std::string random()
 {
@@ -18,18 +19,18 @@ std::string random()
   return result;
 }
 
-}  // namespace application
+}  // namespace experiments
 
-int main(int argc, char* argv[])
+static void random(benchmark::State& state)
 {
-  try {
-    std::puts(std::format("{}\n", application::random()).data());
+  for (auto _ : state) {
+    auto str = experiments::random();
+    benchmark::DoNotOptimize(str);
   }
-  catch (const std::exception& e) {
-    std::fputs(e.what(), stderr);
-    std::fputc('\n', stderr);
-    std::fflush(stderr);
-    return EXIT_FAILURE;
-  }
-  return EXIT_SUCCESS;
+}
+BENCHMARK(random);
+
+TEST_CASE("experiments::random")
+{
+  REQUIRE(!experiments::random().empty());
 }

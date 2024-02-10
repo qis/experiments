@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 5,
   "cmakeMinimumRequired": {
     "major": 3,
     "minor": 28
@@ -13,6 +13,9 @@
       "architecture": {
         "strategy": "external",
         "value": "x64"
+      },
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
