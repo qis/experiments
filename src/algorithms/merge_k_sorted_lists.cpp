@@ -296,7 +296,6 @@ std::array<std::unique_ptr<benchmark_input>, Size> benchmark_inputs(std::size_t 
 }
 
 }  // namespace data
-
 }  // namespace algorithms::merge_k_sorted_lists
 
 static void algorithms_merge_k_sorted_lists_simple(benchmark::State& state)
