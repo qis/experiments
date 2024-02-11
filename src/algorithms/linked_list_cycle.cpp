@@ -79,7 +79,7 @@ struct container : boost::noncopyable {
 
 using list_ptr = std::unique_ptr<container>;
 
-inline list_ptr create(std::vector<int> values)
+inline list_ptr create(const std::vector<int>& values)
 {
   auto ptr = std::make_unique<container>();
   ptr->data.reserve(values.size());
