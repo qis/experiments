@@ -298,7 +298,56 @@ std::array<std::unique_ptr<benchmark_input>, Size> benchmark_inputs(std::size_t 
 }  // namespace data
 }  // namespace algorithms::merge_k_sorted_lists
 
-#if 0
+#if ENABLE_TESTS
+
+TEST_CASE("algorithms::merge_k_sorted_lists::simple")
+{
+  auto input = algorithms::merge_k_sorted_lists::data::test();
+  auto list = algorithms::merge_k_sorted_lists::simple(input->lists);
+  for (auto v : input->compare) {
+    REQUIRE(list);
+    REQUIRE(list->value == v);
+    list = list->next;
+  }
+}
+
+TEST_CASE("algorithms::merge_k_sorted_lists::tbb")
+{
+  auto input = algorithms::merge_k_sorted_lists::data::test();
+  auto list = algorithms::merge_k_sorted_lists::simple_tbb(input->lists);
+  for (auto v : input->compare) {
+    REQUIRE(list);
+    REQUIRE(list->value == v);
+    list = list->next;
+  }
+}
+
+TEST_CASE("algorithms::merge_k_sorted_lists::successive")
+{
+  auto input = algorithms::merge_k_sorted_lists::data::test();
+  auto list = algorithms::merge_k_sorted_lists::successive(input->lists);
+  for (auto v : input->compare) {
+    REQUIRE(list);
+    REQUIRE(list->value == v);
+    list = list->next;
+  }
+}
+
+TEST_CASE("algorithms::merge_k_sorted_lists::cheat")
+{
+  auto input = algorithms::merge_k_sorted_lists::data::test();
+  auto list = algorithms::merge_k_sorted_lists::cheat(input->lists);
+  for (auto v : input->compare) {
+    REQUIRE(list);
+    REQUIRE(list->value == v);
+    list = list->next;
+  }
+}
+
+#endif  // ENABLE_TESTS
+
+#if ENABLE_BENCHMARKS
+
 static void algorithms_merge_k_sorted_lists_simple(benchmark::State& state)
 {
   const auto lists = static_cast<std::size_t>(state.range(0));
@@ -356,47 +405,4 @@ static void algorithms_merge_k_sorted_lists_cheat(benchmark::State& state)
 }
 BENCHMARK(algorithms_merge_k_sorted_lists_cheat)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
 
-TEST_CASE("algorithms::merge_k_sorted_lists::simple")
-{
-  auto input = algorithms::merge_k_sorted_lists::data::test();
-  auto list = algorithms::merge_k_sorted_lists::simple(input->lists);
-  for (auto v : input->compare) {
-    REQUIRE(list);
-    REQUIRE(list->value == v);
-    list = list->next;
-  }
-}
-
-TEST_CASE("algorithms::merge_k_sorted_lists::tbb")
-{
-  auto input = algorithms::merge_k_sorted_lists::data::test();
-  auto list = algorithms::merge_k_sorted_lists::simple_tbb(input->lists);
-  for (auto v : input->compare) {
-    REQUIRE(list);
-    REQUIRE(list->value == v);
-    list = list->next;
-  }
-}
-
-TEST_CASE("algorithms::merge_k_sorted_lists::successive")
-{
-  auto input = algorithms::merge_k_sorted_lists::data::test();
-  auto list = algorithms::merge_k_sorted_lists::successive(input->lists);
-  for (auto v : input->compare) {
-    REQUIRE(list);
-    REQUIRE(list->value == v);
-    list = list->next;
-  }
-}
-
-TEST_CASE("algorithms::merge_k_sorted_lists::cheat")
-{
-  auto input = algorithms::merge_k_sorted_lists::data::test();
-  auto list = algorithms::merge_k_sorted_lists::cheat(input->lists);
-  for (auto v : input->compare) {
-    REQUIRE(list);
-    REQUIRE(list->value == v);
-    list = list->next;
-  }
-}
-#endif
+#endif  // ENABLE_BENCHMARKS

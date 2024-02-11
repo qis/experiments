@@ -157,7 +157,8 @@ auto test()
 
 }  // namespace algorithms::add_two_numbers
 
-#if 0
+#if ENABLE_TESTS
+
 TEST_CASE("algorithms::add_two_numbers::simple")
 {
   const auto data = algorithms::add_two_numbers::test();
@@ -187,6 +188,10 @@ TEST_CASE("algorithms::add_two_numbers::optimized")
     n3 = n3->next;
   }
 }
+
+#endif  // ENABLE_TESTS
+
+#if ENABLE_BENCHMARKS
 
 static void algorithms_add_two_numbers_simple(benchmark::State& state)
 {
@@ -223,4 +228,5 @@ BENCHMARK(algorithms_add_two_numbers_optimized)
   ->Args({ 90, 40 })
   ->Args({ 40, 90 });
 // clang-format on
-#endif
+
+#endif  // ENABLE_BENCHMARKS

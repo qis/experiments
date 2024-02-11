@@ -135,7 +135,8 @@ inline auto benchmark(std::size_t size, std::size_t node)
 
 }  // namespace algorithms::linked_list_cycle
 
-#if 0
+#if ENABLE_TESTS
+
 TEST_CASE("algorithms::linked_list_cycle::simple")
 {
   const auto data = algorithms::linked_list_cycle::test();
@@ -155,6 +156,10 @@ TEST_CASE("algorithms::linked_list_cycle::optimized")
   REQUIRE(algorithms::linked_list_cycle::optimized(data.i2->head));
   REQUIRE(algorithms::linked_list_cycle::optimized(data.i1->head));
 }
+
+#endif  // ENABLE_TESTS
+
+#if ENABLE_BENCHMARKS
 
 static void algorithms_linked_list_cycle_simple(benchmark::State& state)
 {
@@ -191,4 +196,5 @@ BENCHMARK(algorithms_linked_list_cycle_optimized)
   ->Args({ 80'000, 2'000 })
   ->Args({ 80'000, 60'000 });
 // clang-format on
-#endif
+
+#endif  // ENABLE_BENCHMARKS
