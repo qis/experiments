@@ -48,6 +48,9 @@ int optimized(std::vector<int>& nums, int target) noexcept
   auto lhs = 0;
   auto rhs = size - 1;
   while (lhs != rhs) {
+    // NOTE: This should be one of the following:
+    // - static_cast<int>(ceil((lhs + rhs) / 2.0))
+    // - a test if `lhs + rhs` is 0
     const auto m = (lhs + rhs + 1) / 2;
     if (data[m] > target) {
       rhs = m - 1;
