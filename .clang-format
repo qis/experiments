@@ -47,7 +47,7 @@ Cpp11BracedListStyle: false
 SpacesInContainerLiterals: false
 
 # Columns
-ColumnLimit: 100
+ColumnLimit: 120
 PenaltyBreakComment: 100
 PenaltyBreakFirstLessLess: 100
 PenaltyBreakString: 1000

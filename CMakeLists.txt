@@ -30,6 +30,10 @@ find_package(Boost REQUIRED COMPONENTS headers json)
 target_link_libraries(main PRIVATE Boost::headers Boost::json)
 target_link_libraries(objects PUBLIC Boost::headers Boost::json)
 
+find_package(TBB REQUIRED COMPONENTS tbb)
+target_link_libraries(main PRIVATE TBB::tbb)
+target_link_libraries(objects PUBLIC TBB::tbb)
+
 find_package(doctest CONFIG REQUIRED)
 target_link_libraries(objects PUBLIC doctest::doctest)
 
@@ -37,9 +41,9 @@ find_package(benchmark CONFIG REQUIRED)
 target_link_libraries(objects PUBLIC benchmark::benchmark)
 
 # Tests
-add_executable(tests EXCLUDE_FROM_ALL src/tests.cpp src/main.manifest)
+add_executable(tests src/tests.cpp src/main.manifest)
 target_link_libraries(tests PRIVATE objects)
 
 # Benchmarks
-add_executable(benchmarks EXCLUDE_FROM_ALL src/benchmarks.cpp src/main.manifest)
+add_executable(benchmarks src/benchmarks.cpp src/main.manifest)
 target_link_libraries(benchmarks PRIVATE objects)
