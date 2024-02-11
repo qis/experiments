@@ -2,12 +2,14 @@
 // ----------------------------------------------------------------------------------------------------------
 // Benchmark                                                                Time             CPU   Iterations
 // ----------------------------------------------------------------------------------------------------------
-// algorithms_merge_k_sorted_lists_simple/16/8000/iterations:8        5373850 ns      3906250 ns            8
-// algorithms_merge_k_sorted_lists_simple/8000/16/iterations:8     2033850575 ns   1966796875 ns            8
-// algorithms_merge_k_sorted_lists_simple_tbb/16/8000/iterations:8  111140950 ns     54687500 ns            8
-// algorithms_merge_k_sorted_lists_simple_tbb/8000/16/iterations:8  840432362 ns    416015625 ns            8
-// algorithms_merge_k_sorted_lists_successive/16/8000/iterations:8    2047013 ns      5859375 ns            8
-// algorithms_merge_k_sorted_lists_successive/8000/16/iterations:8 2953702650 ns   2857421875 ns            8
+// algorithms_merge_k_sorted_lists_simple/16/8000/iterations:8        5338875 ns      5859375 ns            8
+// algorithms_merge_k_sorted_lists_simple/8000/16/iterations:8     2028185525 ns   1960937500 ns            8
+// algorithms_merge_k_sorted_lists_simple_tbb/16/8000/iterations:8  106614162 ns     54687500 ns            8
+// algorithms_merge_k_sorted_lists_simple_tbb/8000/16/iterations:8  828158013 ns    351562500 ns            8
+// algorithms_merge_k_sorted_lists_successive/16/8000/iterations:8    1991712 ns      5859375 ns            8
+// algorithms_merge_k_sorted_lists_successive/8000/16/iterations:8 2972353687 ns   2859375000 ns            8
+// algorithms_merge_k_sorted_lists_cheat/16/8000/iterations:8         2414363 ns        0.000 ns            8
+// algorithms_merge_k_sorted_lists_cheat/8000/16/iterations:8         1987888 ns      1953125 ns            8
 
 #include <boost/container/static_vector.hpp>
 #include <boost/core/noncopyable.hpp>
@@ -15,6 +17,7 @@
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_for.h>
 #include <tbb/parallel_reduce.h>
+#include <tbb/parallel_sort.h>
 #include <algorithm>
 #include <array>
 #include <memory>
@@ -177,6 +180,57 @@ list_node* successive(std::vector<list_node*>& lists)
   return beg;
 }
 
+list_node* cheat(std::vector<list_node*>& lists)
+{
+  using iterator = std::vector<list_node*>::iterator;
+
+  // Get first valid list.
+  constexpr auto get = [](iterator it, iterator end) noexcept {
+    return std::find_if(it, end, [](const auto& e) noexcept {
+      return e != nullptr;
+    });
+  };
+
+  const auto end = lists.end();
+  auto it = get(lists.begin(), end);
+  if (it == end) {
+    return nullptr;
+  }
+
+  // Copy values of the first list.
+  std::vector<int> values;
+  values.reserve(lists.size());
+
+  const auto result = *it;
+  values.push_back(result->value);
+
+  auto last = result;
+  while (last->next) {
+    last = last->next;
+    values.push_back(last->value);
+  }
+
+  // Copy values and concatenate lists.
+  for (it = get(std::next(it), end); it != end; it = get(std::next(it), end)) {
+    last->next = *it;
+    while (last->next) {
+      last = last->next;
+      values.push_back(last->value);
+    }
+  }
+
+  // Sort and assign values.
+  // std::sort(std::execution::par_unseq, values.begin(), values.end());
+  tbb::parallel_sort(values.begin(), values.end());
+  auto node = result;
+  for (auto value : values) {
+    node->value = value;
+    node = node->next;
+  }
+
+  return result;
+}
+
 namespace data {
 
 auto test()
@@ -288,6 +342,20 @@ static void algorithms_merge_k_sorted_lists_successive(benchmark::State& state)
 }
 BENCHMARK(algorithms_merge_k_sorted_lists_successive)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
 
+static void algorithms_merge_k_sorted_lists_cheat(benchmark::State& state)
+{
+  const auto lists = static_cast<std::size_t>(state.range(0));
+  const auto length = static_cast<std::size_t>(state.range(1));
+  auto inputs = algorithms::merge_k_sorted_lists::data::benchmark_inputs<8>(lists, length);
+  auto input = inputs.begin();
+  for (auto _ : state) {
+    auto result = algorithms::merge_k_sorted_lists::cheat((*input)->lists);
+    benchmark::DoNotOptimize(result);
+    input = std::next(input);
+  }
+}
+BENCHMARK(algorithms_merge_k_sorted_lists_cheat)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
+
 TEST_CASE("algorithms::merge_k_sorted_lists::simple")
 {
   auto input = algorithms::merge_k_sorted_lists::data::test();
@@ -314,6 +382,17 @@ TEST_CASE("algorithms::merge_k_sorted_lists::successive")
 {
   auto input = algorithms::merge_k_sorted_lists::data::test();
   auto list = algorithms::merge_k_sorted_lists::successive(input->lists);
+  for (auto v : input->compare) {
+    REQUIRE(list);
+    REQUIRE(list->value == v);
+    list = list->next;
+  }
+}
+
+TEST_CASE("algorithms::merge_k_sorted_lists::cheat")
+{
+  auto input = algorithms::merge_k_sorted_lists::data::test();
+  auto list = algorithms::merge_k_sorted_lists::cheat(input->lists);
   for (auto v : input->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
