@@ -8,7 +8,7 @@
 // algorithms_merge_k_sorted_lists_simple_tbb/8000/16/iterations:8  828158013 ns    351562500 ns            8
 // algorithms_merge_k_sorted_lists_successive/16/8000/iterations:8    1991712 ns      5859375 ns            8
 // algorithms_merge_k_sorted_lists_successive/8000/16/iterations:8 2972353687 ns   2859375000 ns            8
-// algorithms_merge_k_sorted_lists_cheat/16/8000/iterations:8         2414363 ns        0.000 ns            8
+// algorithms_merge_k_sorted_lists_cheat/16/8000/iterations:8         2414363 ns      1953125 ns            8
 // algorithms_merge_k_sorted_lists_cheat/8000/16/iterations:8         1987888 ns      1953125 ns            8
 
 #include <boost/container/static_vector.hpp>
@@ -28,11 +28,18 @@
 
 namespace algorithms::merge_k_sorted_lists {
 
-// Definition for singly-linked list.
+// =====================================================================================================================
+// Definitions
+// =====================================================================================================================
+
 struct list_node {
   int value{ 0 };
   list_node* next{ nullptr };
 };
+
+// =====================================================================================================================
+// Solutions
+// =====================================================================================================================
 
 list_node* simple(std::vector<list_node*>& lists)
 {
@@ -231,16 +238,18 @@ list_node* cheat(std::vector<list_node*>& lists)
   return result;
 }
 
-namespace data {
+// =====================================================================================================================
+// Helpers
+// =====================================================================================================================
 
 auto test()
 {
-  struct input : boost::noncopyable {
+  struct test_data : boost::noncopyable {
     boost::container::static_vector<list_node, 8> data;
     std::vector<list_node*> lists;
     std::array<int, 8> compare;
   };
-  auto p = std::make_unique<input>();
+  auto p = std::make_unique<test_data>();
   auto n = p->lists.emplace_back(&p->data.emplace_back(1));
   n = n->next = &p->data.emplace_back(4);
   n = n->next = &p->data.emplace_back(5);
@@ -253,58 +262,54 @@ auto test()
   return p;
 }
 
-struct benchmark_input : boost::noncopyable {
-  benchmark_input(std::size_t size) : data(size) {}
-  std::vector<list_node> data;
-  std::vector<list_node*> lists;
-};
-
-std::unique_ptr<benchmark_input> benchmark(std::size_t lists, std::size_t length)
-{
-  std::random_device rd;
-  std::uniform_int_distribution<int> dist(0, 5);
-  auto p = std::make_unique<benchmark_input>(lists * length);
-  std::size_t data_index = 0;
-  for (std::size_t i = 0; i < lists; i++) {
-    auto node = p->lists.emplace_back(&p->data[data_index++]);
-    node->value = dist(rd);
-    for (std::size_t j = 1; j < length; j++) {
-      node->next = &p->data[data_index++];
-      node->next->value = node->value + dist(rd);
-      node = node->next;
-    }
-  }
-  return p;
-}
-
 template <std::size_t Size>
-std::array<std::unique_ptr<benchmark_input>, Size> benchmark_inputs(std::size_t lists, std::size_t length)
+auto benchmark(std::size_t lists, std::size_t length)
 {
+  struct benchmark_input : boost::noncopyable {
+    benchmark_input(std::size_t size) : data(size) {}
+    std::vector<list_node> data;
+    std::vector<list_node*> lists;
+  };
+  const auto generate = [lists, length]() {
+    std::random_device rd;
+    std::uniform_int_distribution<int> dist(0, 5);
+    auto p = std::make_unique<benchmark_input>(lists * length);
+    std::size_t data_index = 0;
+    for (std::size_t i = 0; i < lists; i++) {
+      auto node = p->lists.emplace_back(&p->data[data_index++]);
+      node->value = dist(rd);
+      for (std::size_t j = 1; j < length; j++) {
+        node->next = &p->data[data_index++];
+        node->next->value = node->value + dist(rd);
+        node = node->next;
+      }
+    }
+    return p;
+  };
   std::array<std::unique_ptr<benchmark_input>, Size> inputs;
   tbb::parallel_for(
     tbb::blocked_range(inputs.begin(), inputs.end()),
-    [lists, length](const auto& range) {
+    [generate](const auto& range) {
       for (auto it = range.begin(); it != range.end(); ++it) {
-        *it = benchmark(lists, length);
+        *it = generate();
       }
     },
     tbb::simple_partitioner());
   for (auto& e : inputs) {
-    e = benchmark(lists, length);
+    e = generate();
   }
   return inputs;
 }
 
-}  // namespace data
 }  // namespace algorithms::merge_k_sorted_lists
 
 #if ENABLE_TESTS
 
 TEST_CASE("algorithms::merge_k_sorted_lists::simple")
 {
-  auto input = algorithms::merge_k_sorted_lists::data::test();
-  auto list = algorithms::merge_k_sorted_lists::simple(input->lists);
-  for (auto v : input->compare) {
+  auto data = algorithms::merge_k_sorted_lists::test();
+  auto list = algorithms::merge_k_sorted_lists::simple(data->lists);
+  for (auto v : data->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
     list = list->next;
@@ -313,9 +318,9 @@ TEST_CASE("algorithms::merge_k_sorted_lists::simple")
 
 TEST_CASE("algorithms::merge_k_sorted_lists::tbb")
 {
-  auto input = algorithms::merge_k_sorted_lists::data::test();
-  auto list = algorithms::merge_k_sorted_lists::simple_tbb(input->lists);
-  for (auto v : input->compare) {
+  auto data = algorithms::merge_k_sorted_lists::test();
+  auto list = algorithms::merge_k_sorted_lists::simple_tbb(data->lists);
+  for (auto v : data->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
     list = list->next;
@@ -324,9 +329,9 @@ TEST_CASE("algorithms::merge_k_sorted_lists::tbb")
 
 TEST_CASE("algorithms::merge_k_sorted_lists::successive")
 {
-  auto input = algorithms::merge_k_sorted_lists::data::test();
-  auto list = algorithms::merge_k_sorted_lists::successive(input->lists);
-  for (auto v : input->compare) {
+  auto data = algorithms::merge_k_sorted_lists::test();
+  auto list = algorithms::merge_k_sorted_lists::successive(data->lists);
+  for (auto v : data->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
     list = list->next;
@@ -335,9 +340,9 @@ TEST_CASE("algorithms::merge_k_sorted_lists::successive")
 
 TEST_CASE("algorithms::merge_k_sorted_lists::cheat")
 {
-  auto input = algorithms::merge_k_sorted_lists::data::test();
-  auto list = algorithms::merge_k_sorted_lists::cheat(input->lists);
-  for (auto v : input->compare) {
+  auto data = algorithms::merge_k_sorted_lists::test();
+  auto list = algorithms::merge_k_sorted_lists::cheat(data->lists);
+  for (auto v : data->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
     list = list->next;
@@ -352,8 +357,8 @@ static void algorithms_merge_k_sorted_lists_simple(benchmark::State& state)
 {
   const auto lists = static_cast<std::size_t>(state.range(0));
   const auto length = static_cast<std::size_t>(state.range(1));
-  auto inputs = algorithms::merge_k_sorted_lists::data::benchmark_inputs<8>(lists, length);
-  auto input = inputs.begin();
+  const auto data = algorithms::merge_k_sorted_lists::benchmark<8>(lists, length);
+  auto input = data.begin();
   for (auto _ : state) {
     auto result = algorithms::merge_k_sorted_lists::simple((*input)->lists);
     benchmark::DoNotOptimize(result);
@@ -367,8 +372,8 @@ static void algorithms_merge_k_sorted_lists_simple_tbb(benchmark::State& state)
   const auto lists = static_cast<std::size_t>(state.range(0));
   const auto length = static_cast<std::size_t>(state.range(1));
   const auto grain = lists / std::thread::hardware_concurrency() * 2;
-  auto inputs = algorithms::merge_k_sorted_lists::data::benchmark_inputs<8>(lists, length);
-  auto input = inputs.begin();
+  const auto data = algorithms::merge_k_sorted_lists::benchmark<8>(lists, length);
+  auto input = data.begin();
   for (auto _ : state) {
     auto result = algorithms::merge_k_sorted_lists::simple_tbb((*input)->lists, grain);
     benchmark::DoNotOptimize(result);
@@ -381,8 +386,8 @@ static void algorithms_merge_k_sorted_lists_successive(benchmark::State& state)
 {
   const auto lists = static_cast<std::size_t>(state.range(0));
   const auto length = static_cast<std::size_t>(state.range(1));
-  auto inputs = algorithms::merge_k_sorted_lists::data::benchmark_inputs<8>(lists, length);
-  auto input = inputs.begin();
+  const auto data = algorithms::merge_k_sorted_lists::benchmark<8>(lists, length);
+  auto input = data.begin();
   for (auto _ : state) {
     auto result = algorithms::merge_k_sorted_lists::successive((*input)->lists);
     benchmark::DoNotOptimize(result);
@@ -395,8 +400,8 @@ static void algorithms_merge_k_sorted_lists_cheat(benchmark::State& state)
 {
   const auto lists = static_cast<std::size_t>(state.range(0));
   const auto length = static_cast<std::size_t>(state.range(1));
-  auto inputs = algorithms::merge_k_sorted_lists::data::benchmark_inputs<8>(lists, length);
-  auto input = inputs.begin();
+  const auto data = algorithms::merge_k_sorted_lists::benchmark<8>(lists, length);
+  auto input = data.begin();
   for (auto _ : state) {
     auto result = algorithms::merge_k_sorted_lists::cheat((*input)->lists);
     benchmark::DoNotOptimize(result);
