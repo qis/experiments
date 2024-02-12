@@ -1,12 +1,14 @@
 // https://leetcode.com/problems/guess-number-higher-or-lower/
-// ----------------------------------------------------------------------------------------------------------------------
-// Benchmark                                                                            Time             CPU   Iterations
-// ----------------------------------------------------------------------------------------------------------------------
-// algorithms_guess_number_higher_or_lower_simple/123/2147483646                     27.4 ns         25.7 ns     24888889
-// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646              21.8 ns         21.5 ns     32000000
-// algorithms_guess_number_higher_or_lower_random_access/123/2147483646              22.5 ns         21.4 ns     29866667
-// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646       24.7 ns         24.0 ns     28000000
+// -------------------------------------------------------------------------------------------------------------------
+// Benchmark                                                                         Time             CPU   Iterations
+// -------------------------------------------------------------------------------------------------------------------
+// algorithms_guess_number_higher_or_lower_simple/123/2147483646                  27.6 ns         27.9 ns     26352941
+// algorithms_guess_number_higher_or_lower_integer_range/123/2147483646           9.44 ns         9.28 ns     64000000
+// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646           22.2 ns         21.5 ns     32000000
+// algorithms_guess_number_higher_or_lower_random_access/123/2147483646           22.0 ns         22.0 ns     32000000
+// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646    29.1 ns         28.6 ns     21333333
 
+#include <boost/range/irange.hpp>
 #include <common.hpp>
 #include <algorithm>
 #include <compare>
@@ -43,6 +45,14 @@ int simple(int n) noexcept
   }
   std::unreachable();
   return -1;
+}
+
+int integer_range(int n) noexcept
+{
+  const auto range = boost::integer_range<int>(1, n + 1);
+  return *std::lower_bound(range.begin(), range.end(), 0, [](int lhs, int) noexcept {
+    return guess(lhs) > 0;
+  });
 }
 
 // NOTE: The std::lower_bound algorithm is optimized for log₂(last - first) + O(1) number of
@@ -301,6 +311,14 @@ TEST_CASE("algorithms::guess_number_higher_or_lower::simple")
   }
 }
 
+TEST_CASE("algorithms::guess_number_higher_or_lower::integer_range")
+{
+  for (auto i = 1; i <= 8; i++) {
+    algorithms::guess_number_higher_or_lower::number = i;
+    REQUIRE(algorithms::guess_number_higher_or_lower::integer_range(8) == i);
+  }
+}
+
 TEST_CASE("algorithms::guess_number_higher_or_lower::bidirectional")
 {
   for (auto i = 1; i <= 8; i++) {
@@ -327,7 +345,7 @@ TEST_CASE("algorithms::guess_number_higher_or_lower::legacy_random_access")
 
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS
+#if ENABLE_BENCHMARKS || 1
 
 static void algorithms_guess_number_higher_or_lower_simple(benchmark::State& state)
 {
@@ -340,6 +358,20 @@ static void algorithms_guess_number_higher_or_lower_simple(benchmark::State& sta
 
 // clang-format off
 BENCHMARK(algorithms_guess_number_higher_or_lower_simple)
+  ->Args({ 123, std::numeric_limits<int>::max() - 1 });
+// clang-format on
+
+static void algorithms_guess_number_higher_or_lower_integer_range(benchmark::State& state)
+{
+  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  for (auto _ : state) {
+    auto result = algorithms::guess_number_higher_or_lower::integer_range(state.range(1));
+    benchmark::DoNotOptimize(result);
+  }
+}
+
+// clang-format off
+BENCHMARK(algorithms_guess_number_higher_or_lower_integer_range)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
