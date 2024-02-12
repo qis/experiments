@@ -45,8 +45,8 @@ int simple(int n) noexcept
   return -1;
 }
 
-// NOTE: std::lower_bound is optimized for log₂(last - first) + O(1) comparisons for
-//       iterators satisfying the std::random_access_iterator<iterator> concept
+// NOTE: The std::lower_bound algorithm is optimized for log₂(last - first) + O(1) number of
+//       comparisons for iterators that satisfy the LegacyRandomAccessIterator requirement.
 
 namespace legacy {  // clang-format off
 
