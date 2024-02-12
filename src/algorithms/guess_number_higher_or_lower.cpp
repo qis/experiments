@@ -2,11 +2,11 @@
 // -------------------------------------------------------------------------------------------------------------------
 // Benchmark                                                                         Time             CPU   Iterations
 // -------------------------------------------------------------------------------------------------------------------
-// algorithms_guess_number_higher_or_lower_simple/123/2147483646                  27.6 ns         27.9 ns     26352941
-// algorithms_guess_number_higher_or_lower_integer_range/123/2147483646           9.44 ns         9.28 ns     64000000
-// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646           22.2 ns         21.5 ns     32000000
-// algorithms_guess_number_higher_or_lower_random_access/123/2147483646           22.0 ns         22.0 ns     32000000
-// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646    29.1 ns         28.6 ns     21333333
+// algorithms_guess_number_higher_or_lower_simple/123/2147483646                  27.4 ns         27.0 ns     24888889
+// algorithms_guess_number_higher_or_lower_integer_range/123/2147483646           9.37 ns         9.00 ns     74666667
+// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646           22.1 ns         20.9 ns     29866667
+// algorithms_guess_number_higher_or_lower_random_access/123/2147483646           22.1 ns         20.5 ns     32000000
+// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646    28.7 ns         27.8 ns     23578947
 
 #include <boost/range/irange.hpp>
 #include <common.hpp>
@@ -146,7 +146,7 @@ public:
   constexpr iterator operator--(int) noexcept { const iterator rv{ *this }; --(*this); return rv; }
   // clang-format on
 
-  constexpr auto operator<=>(iterator const& other) const = default;
+  constexpr auto operator<=>(iterator const& other) const noexcept = default;
 
 protected:
   value_type value_{ 0 };
@@ -197,7 +197,7 @@ public:
     return { i.value_ - s.value_ };
   }
 
-  constexpr auto operator<=>(iterator const& other) const = default;
+  constexpr auto operator<=>(iterator const& other) const noexcept = default;
 
 private:
   value_type value_{ 0 };
@@ -208,8 +208,10 @@ static_assert(!legacy::random_access_iterator<random_access_iterator>);
 
 class legacy_random_access_iterator {
 public:
+  using iterator_category = std::random_access_iterator_tag;
   using value_type = int;
   using reference = int&;
+  using pointer = int*;
   using difference_type = int;
   using iterator = legacy_random_access_iterator;
 
@@ -251,7 +253,7 @@ public:
     return { i.value_ - s.value_ };
   }
 
-  constexpr auto operator<=>(iterator const& other) const = default;
+  constexpr auto operator<=>(iterator const& other) const noexcept = default;
 
 private:
   mutable value_type value_{ 0 };
@@ -345,7 +347,7 @@ TEST_CASE("algorithms::guess_number_higher_or_lower::legacy_random_access")
 
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS || 1
+#if ENABLE_BENCHMARKS
 
 static void algorithms_guess_number_higher_or_lower_simple(benchmark::State& state)
 {
