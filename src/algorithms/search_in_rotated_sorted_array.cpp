@@ -83,8 +83,6 @@ std::vector<int> create(std::size_t size, int skip, int rotate = -1)
 
 #if ENABLE_TESTS
 
-#include <iostream>
-
 TEST_CASE("algorithms::search_in_rotated_sorted_array::slow")
 {
   const auto n0 = algorithms::search_in_rotated_sorted_array::create(7, 3);
