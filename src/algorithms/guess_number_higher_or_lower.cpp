@@ -1,12 +1,16 @@
 // https://leetcode.com/problems/guess-number-higher-or-lower/
-// ---------------------------------------------------------------------------------------------------------------------
-// Benchmark                                                                           Time             CPU   Iterations
-// ---------------------------------------------------------------------------------------------------------------------
-// algorithms_guess_number_higher_or_lower_simple/123/2147483646                    27.6 ns         28.3 ns     24888889
-// algorithms_guess_number_higher_or_lower_integer_range/123/2147483646             9.22 ns         9.42 ns     74666667
-// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646             16.5 ns         16.0 ns     44800000
-// algorithms_guess_number_higher_or_lower_random_access/123/2147483646             11.4 ns         11.5 ns     64000000
-// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646      8.87 ns         8.79 ns     74666667
+// -------------------------------------------------------------------------------------------------------------------
+// Benchmark                                                                              Time        CPU   Iterations
+// -------------------------------------------------------------------------------------------------------------------
+// algorithms_guess_number_higher_or_lower_simple/123/2147483646                       27.5 ns    27.0 ns     24888889
+// algorithms_guess_number_higher_or_lower_integer_range/123/2147483646                14.2 ns    14.1 ns     49777778
+// algorithms_guess_number_higher_or_lower_const_integer_range/123/2147483646          9.23 ns    9.00 ns     74666667
+// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646                12.2 ns    11.7 ns     56000000
+// algorithms_guess_number_higher_or_lower_const_bidirectional/123/2147483646          11.9 ns    11.2 ns     56000000
+// algorithms_guess_number_higher_or_lower_random_access/123/2147483646                16.5 ns    16.4 ns     44800000
+// algorithms_guess_number_higher_or_lower_const_random_access/123/2147483646          16.5 ns    16.4 ns     44800000
+// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646         8.73 ns    8.79 ns    112000000
+// algorithms_guess_number_higher_or_lower_const_legacy_random_access/123/2147483646   8.87 ns    8.79 ns     74666667
 
 #include <boost/range/irange.hpp>
 #include <common.hpp>
@@ -50,6 +54,14 @@ int simple(int n) noexcept
 int integer_range(int n) noexcept
 {
   const auto range = boost::integer_range<int>(1, n);
+  return *std::lower_bound(range.begin(), range.end(), 0, [](int lhs, int) noexcept {
+    return guess(lhs) > 0;
+  });
+}
+
+int const_integer_range(int n) noexcept
+{
+  const auto range = boost::integer_range<const int>(1, n);
   return *std::lower_bound(range.begin(), range.end(), 0, [](int lhs, int) noexcept {
     return guess(lhs) > 0;
   });
@@ -156,6 +168,38 @@ static_assert(std::bidirectional_iterator<bidirectional_iterator>);
 static_assert(!std::random_access_iterator<bidirectional_iterator>);
 static_assert(!legacy::random_access_iterator<bidirectional_iterator>);
 
+class const_bidirectional_iterator {
+public:
+  using value_type = int;
+  using reference = const int;
+  using difference_type = int;
+  using iterator = const_bidirectional_iterator;
+
+  constexpr const_bidirectional_iterator() noexcept = default;
+  constexpr const_bidirectional_iterator(int value) noexcept : value_(value) {}
+  constexpr const_bidirectional_iterator(const_bidirectional_iterator&& other) noexcept = default;
+  constexpr const_bidirectional_iterator(const const_bidirectional_iterator& other) noexcept = default;
+  constexpr const_bidirectional_iterator& operator=(const_bidirectional_iterator&& other) noexcept = default;
+  constexpr const_bidirectional_iterator& operator=(const const_bidirectional_iterator& other) noexcept = default;
+
+  // clang-format off
+  constexpr reference operator*() const noexcept { return value_; }
+  constexpr iterator& operator++() noexcept { value_ += 1; return *this; }
+  constexpr iterator operator++(int) noexcept { const iterator rv{ *this }; ++(*this); return rv; }
+  constexpr iterator& operator--() noexcept { value_ -= 1; return *this; }
+  constexpr iterator operator--(int) noexcept { const iterator rv{ *this }; --(*this); return rv; }
+  // clang-format on
+
+  constexpr auto operator<=>(iterator const& other) const noexcept = default;
+
+protected:
+  value_type value_{ 0 };
+};
+
+static_assert(std::bidirectional_iterator<const_bidirectional_iterator>);
+static_assert(!std::random_access_iterator<const_bidirectional_iterator>);
+static_assert(!legacy::random_access_iterator<const_bidirectional_iterator>);
+
 class random_access_iterator {
 public:
   using value_type = int;
@@ -205,6 +249,56 @@ private:
 
 static_assert(std::random_access_iterator<random_access_iterator>);
 static_assert(!legacy::random_access_iterator<random_access_iterator>);
+
+class const_random_access_iterator {
+public:
+  using value_type = int;
+  using reference = const int;
+  using difference_type = int;
+  using iterator = const_random_access_iterator;
+
+  constexpr const_random_access_iterator() noexcept = default;
+  constexpr const_random_access_iterator(int value) noexcept : value_(value) {}
+  constexpr const_random_access_iterator(const_random_access_iterator&& other) noexcept = default;
+  constexpr const_random_access_iterator(const const_random_access_iterator& other) noexcept = default;
+  constexpr const_random_access_iterator& operator=(const_random_access_iterator&& other) noexcept = default;
+  constexpr const_random_access_iterator& operator=(const const_random_access_iterator& other) noexcept = default;
+
+  // clang-format off
+  constexpr reference operator*() const noexcept { return value_; }
+  constexpr iterator& operator++() noexcept { value_ += 1; return *this; }
+  constexpr iterator operator++(int) noexcept { const iterator rv{ *this }; ++(*this); return rv; }
+  constexpr iterator& operator--() noexcept { value_ -= 1; return *this; }
+  constexpr iterator operator--(int) noexcept { const iterator rv{ *this }; --(*this); return rv; }
+  constexpr iterator& operator+=(difference_type n) noexcept { value_ += n; return *this; }
+  constexpr iterator& operator-=(difference_type n) noexcept { value_ -= n; return *this; }
+  constexpr iterator operator+(difference_type n) const noexcept { return { value_ + n }; }
+  constexpr iterator operator-(difference_type n) const noexcept { return { value_ - n }; }
+  // clang-format on
+
+  constexpr reference operator[](difference_type n) const noexcept
+  {
+    return value_ + n;
+  }
+
+  friend constexpr difference_type operator-(const iterator& i, const iterator& s) noexcept
+  {
+    return i.value_ - s.value_;
+  }
+
+  friend constexpr iterator operator+(const iterator& i, const iterator& s) noexcept
+  {
+    return { i.value_ - s.value_ };
+  }
+
+  constexpr auto operator<=>(iterator const& other) const noexcept = default;
+
+private:
+  value_type value_{ 0 };
+};
+
+static_assert(std::random_access_iterator<const_random_access_iterator>);
+static_assert(!legacy::random_access_iterator<const_random_access_iterator>);
 
 class legacy_random_access_iterator {
 public:
@@ -262,6 +356,62 @@ private:
 static_assert(std::random_access_iterator<legacy_random_access_iterator>);
 static_assert(legacy::random_access_iterator<legacy_random_access_iterator>);
 
+class const_legacy_random_access_iterator {
+public:
+  using iterator_category = std::random_access_iterator_tag;
+  using value_type = int;
+  using reference = const int&;
+  using pointer = const int*;
+  using difference_type = int;
+  using iterator = const_legacy_random_access_iterator;
+
+  constexpr const_legacy_random_access_iterator() noexcept = default;
+  constexpr const_legacy_random_access_iterator(int value) noexcept : value_(value) {}
+  constexpr const_legacy_random_access_iterator(const_legacy_random_access_iterator&& other) noexcept = default;
+  constexpr const_legacy_random_access_iterator(const const_legacy_random_access_iterator& other) noexcept = default;
+  constexpr const_legacy_random_access_iterator& operator=(const_legacy_random_access_iterator&& other) noexcept = default;
+  constexpr const_legacy_random_access_iterator& operator=(const const_legacy_random_access_iterator& other) noexcept = default;
+
+  // clang-format off
+  constexpr reference operator*() const noexcept { return value_; }
+  constexpr iterator& operator++() noexcept { value_ += 1; return *this; }
+  constexpr iterator operator++(int) noexcept { const iterator rv{ *this }; ++(*this); return rv; }
+  constexpr iterator& operator--() noexcept { value_ -= 1; return *this; }
+  constexpr iterator operator--(int) noexcept { const iterator rv{ *this }; --(*this); return rv; }
+  constexpr iterator& operator+=(difference_type n) noexcept { value_ += n; return *this; }
+  constexpr iterator& operator-=(difference_type n) noexcept { value_ -= n; return *this; }
+  constexpr iterator operator+(difference_type n) const noexcept { return { value_ + n }; }
+  constexpr iterator operator-(difference_type n) const noexcept { return { value_ - n }; }
+  // clang-format on
+
+  // There is no need to implement this function, since std::lower_bound doesn't use it.
+  reference operator[](difference_type n) const noexcept;
+  //{
+  //  //assert(false);
+  //  static thread_local value_type value;
+  //  value = value_ + n;
+  //  return value;
+  //}
+
+  friend constexpr difference_type operator-(const iterator& i, const iterator& s) noexcept
+  {
+    return i.value_ - s.value_;
+  }
+
+  friend constexpr iterator operator+(const iterator& i, const iterator& s) noexcept
+  {
+    return { i.value_ - s.value_ };
+  }
+
+  constexpr auto operator<=>(iterator const& other) const noexcept = default;
+
+private:
+  value_type value_{ 0 };
+};
+
+static_assert(std::random_access_iterator<const_legacy_random_access_iterator>);
+static_assert(legacy::random_access_iterator<const_legacy_random_access_iterator>);
+
 template <class Iterator>
 int standard(int n) noexcept
 {
@@ -275,14 +425,29 @@ int bidirectional(int n) noexcept
   return standard<bidirectional_iterator>(n);
 }
 
+int const_bidirectional(int n) noexcept
+{
+  return standard<const_bidirectional_iterator>(n);
+}
+
 int random_access(int n) noexcept
 {
   return standard<random_access_iterator>(n);
 }
 
+int const_random_access(int n) noexcept
+{
+  return standard<const_random_access_iterator>(n);
+}
+
 int legacy_random_access(int n) noexcept
 {
   return standard<legacy_random_access_iterator>(n);
+}
+
+int const_legacy_random_access(int n) noexcept
+{
+  return standard<const_legacy_random_access_iterator>(n);
 }
 
 // =====================================================================================================================
@@ -303,7 +468,7 @@ int guess(int i)
 
 }  // namespace algorithms::guess_number_higher_or_lower
 
-#if ENABLE_TESTS
+#if ENABLE_TESTS || 1
 
 TEST_CASE("algorithms::guess_number_higher_or_lower::simple")
 {
@@ -321,11 +486,27 @@ TEST_CASE("algorithms::guess_number_higher_or_lower::integer_range")
   }
 }
 
+TEST_CASE("algorithms::guess_number_higher_or_lower::const_integer_range")
+{
+  for (auto i = 1; i <= 8; i++) {
+    algorithms::guess_number_higher_or_lower::number = i;
+    REQUIRE(algorithms::guess_number_higher_or_lower::const_integer_range(8) == i);
+  }
+}
+
 TEST_CASE("algorithms::guess_number_higher_or_lower::bidirectional")
 {
   for (auto i = 1; i <= 8; i++) {
     algorithms::guess_number_higher_or_lower::number = i;
     REQUIRE(algorithms::guess_number_higher_or_lower::bidirectional(8) == i);
+  }
+}
+
+TEST_CASE("algorithms::guess_number_higher_or_lower::const_bidirectional")
+{
+  for (auto i = 1; i <= 8; i++) {
+    algorithms::guess_number_higher_or_lower::number = i;
+    REQUIRE(algorithms::guess_number_higher_or_lower::const_bidirectional(8) == i);
   }
 }
 
@@ -337,6 +518,14 @@ TEST_CASE("algorithms::guess_number_higher_or_lower::random_access")
   }
 }
 
+TEST_CASE("algorithms::guess_number_higher_or_lower::const_random_access")
+{
+  for (auto i = 1; i <= 8; i++) {
+    algorithms::guess_number_higher_or_lower::number = i;
+    REQUIRE(algorithms::guess_number_higher_or_lower::const_random_access(8) == i);
+  }
+}
+
 TEST_CASE("algorithms::guess_number_higher_or_lower::legacy_random_access")
 {
   for (auto i = 1; i <= 8; i++) {
@@ -345,9 +534,17 @@ TEST_CASE("algorithms::guess_number_higher_or_lower::legacy_random_access")
   }
 }
 
+TEST_CASE("algorithms::guess_number_higher_or_lower::const_legacy_random_access")
+{
+  for (auto i = 1; i <= 8; i++) {
+    algorithms::guess_number_higher_or_lower::number = i;
+    REQUIRE(algorithms::guess_number_higher_or_lower::const_legacy_random_access(8) == i);
+  }
+}
+
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS
+#if ENABLE_BENCHMARKS || 1
 
 static void algorithms_guess_number_higher_or_lower_simple(benchmark::State& state)
 {
@@ -377,6 +574,20 @@ BENCHMARK(algorithms_guess_number_higher_or_lower_integer_range)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
+static void algorithms_guess_number_higher_or_lower_const_integer_range(benchmark::State& state)
+{
+  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  for (auto _ : state) {
+    auto result = algorithms::guess_number_higher_or_lower::const_integer_range(state.range(1));
+    benchmark::DoNotOptimize(result);
+  }
+}
+
+// clang-format off
+BENCHMARK(algorithms_guess_number_higher_or_lower_const_integer_range)
+  ->Args({ 123, std::numeric_limits<int>::max() - 1 });
+// clang-format on
+
 static void algorithms_guess_number_higher_or_lower_bidirectional(benchmark::State& state)
 {
   algorithms::guess_number_higher_or_lower::number = state.range(0);
@@ -388,6 +599,20 @@ static void algorithms_guess_number_higher_or_lower_bidirectional(benchmark::Sta
 
 // clang-format off
 BENCHMARK(algorithms_guess_number_higher_or_lower_bidirectional)
+  ->Args({ 123, std::numeric_limits<int>::max() - 1 });
+// clang-format on
+
+static void algorithms_guess_number_higher_or_lower_const_bidirectional(benchmark::State& state)
+{
+  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  for (auto _ : state) {
+    auto result = algorithms::guess_number_higher_or_lower::const_bidirectional(state.range(1));
+    benchmark::DoNotOptimize(result);
+  }
+}
+
+// clang-format off
+BENCHMARK(algorithms_guess_number_higher_or_lower_const_bidirectional)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
@@ -405,6 +630,20 @@ BENCHMARK(algorithms_guess_number_higher_or_lower_random_access)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
+static void algorithms_guess_number_higher_or_lower_const_random_access(benchmark::State& state)
+{
+  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  for (auto _ : state) {
+    auto result = algorithms::guess_number_higher_or_lower::const_random_access(state.range(1));
+    benchmark::DoNotOptimize(result);
+  }
+}
+
+// clang-format off
+BENCHMARK(algorithms_guess_number_higher_or_lower_const_random_access)
+  ->Args({ 123, std::numeric_limits<int>::max() - 1 });
+// clang-format on
+
 static void algorithms_guess_number_higher_or_lower_legacy_random_access(benchmark::State& state)
 {
   algorithms::guess_number_higher_or_lower::number = state.range(0);
@@ -416,6 +655,20 @@ static void algorithms_guess_number_higher_or_lower_legacy_random_access(benchma
 
 // clang-format off
 BENCHMARK(algorithms_guess_number_higher_or_lower_legacy_random_access)
+  ->Args({ 123, std::numeric_limits<int>::max() - 1 });
+// clang-format on
+
+static void algorithms_guess_number_higher_or_lower_const_legacy_random_access(benchmark::State& state)
+{
+  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  for (auto _ : state) {
+    auto result = algorithms::guess_number_higher_or_lower::const_legacy_random_access(state.range(1));
+    benchmark::DoNotOptimize(result);
+  }
+}
+
+// clang-format off
+BENCHMARK(algorithms_guess_number_higher_or_lower_const_legacy_random_access)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
