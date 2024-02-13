@@ -8,7 +8,8 @@ set_target_properties(main PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 # Objects
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS
   src/linked_lists/*.[hc]pp
-  src/binary_search/*.[hc]pp)
+  src/binary_search/*.[hc]pp
+  src/hash_table/*.[hc]pp)
 
 add_library(objects OBJECT ${sources})
 
