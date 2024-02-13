@@ -468,7 +468,7 @@ int guess(int i)
 
 }  // namespace algorithms::guess_number_higher_or_lower
 
-#if ENABLE_TESTS || 1
+#if ENABLE_TESTS
 
 TEST_CASE("algorithms::guess_number_higher_or_lower::simple")
 {
@@ -544,7 +544,7 @@ TEST_CASE("algorithms::guess_number_higher_or_lower::const_legacy_random_access"
 
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS || 1
+#if ENABLE_BENCHMARKS
 
 static void algorithms_guess_number_higher_or_lower_simple(benchmark::State& state)
 {
