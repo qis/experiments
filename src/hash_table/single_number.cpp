@@ -1,7 +1,17 @@
-// https://leetcode.com/problems/single-number/ in O(1) memory
+// https://leetcode.com/problems/single-number/
+// ----------------------------------------------------------------------------------------------
+// Benchmark                                                    Time             CPU   Iterations
+// ----------------------------------------------------------------------------------------------
+// hash_table_single_number_simple/iterations:1000          43943 ns        46875 ns         1000
+// hash_table_single_number_accumulate/iterations:1000      40955 ns        31250 ns         1000
+// hash_table_single_number_parallel/iterations:1000        16985 ns        0.000 ns         1000
+
 #include <common.hpp>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_reduce.h>
 #include <algorithm>
-#include <iostream>
+#include <numeric>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -11,36 +21,36 @@ namespace hash_table::single_number {
 // Solutions
 // =====================================================================================================================
 
-int sort(std::vector<int> nums) noexcept
-{
-  std::sort(nums.begin(), nums.end());
-  auto it = nums.data();
-  const auto end = it + nums.size();
-  auto last = *it;
-  if (++it == end || *it != last) {
-    return last;
-  }
-  for (++it; it != end; ++it) {
-    const auto v = *it;
-    if (v == last) {
-      continue;
-    }
-    last = v;
-    if (++it == end || *it != v) {
-      return v;
-    }
-  }
-  std::unreachable();
-  return -1;
-}
-
-int fast(const std::vector<int>& nums) noexcept
+int simple(const std::vector<int>& nums) noexcept
 {
   auto ans = 0;
   for (const auto i : nums) {
     ans = ans ^ i;
   }
   return ans;
+}
+
+int accumulate(const std::vector<int>& nums) noexcept
+{
+  return std::accumulate(nums.cbegin(), nums.cend(), 0, [](int lhs, int rhs) noexcept -> int {
+    return lhs ^ rhs;
+  });
+}
+
+int parallel(const std::vector<int>& nums) noexcept
+{
+  static const auto threads = std::max(std::thread::hardware_concurrency(), 16u);
+  return tbb::parallel_reduce(
+    tbb::blocked_range(nums.cbegin(), nums.cend(), std::max(nums.size() / threads, 1uz)),
+    0,
+    [](const auto& range, int ans) noexcept {
+      return std::accumulate(range.begin(), range.end(), ans, [](int lhs, int rhs) noexcept {
+        return lhs ^ rhs;
+      });
+    },
+    [](int lhs, int rhs) noexcept {
+      return lhs ^ rhs;
+    });
 }
 
 // =====================================================================================================================
@@ -74,74 +84,81 @@ std::vector<int> create(std::size_t size, int unique)
 
 std::vector<int> benchmark()
 {
-  static const auto nums = create(10'000, 900);
+  static const auto nums = create(999'999, 99'999);
   return nums;
 }
 
 }  // namespace hash_table::single_number
 
-#if ENABLE_TESTS || 1
+#if ENABLE_TESTS
 
-TEST_CASE("hash_table::single_number::sort")
+TEST_CASE("hash_table::single_number::simple")
 {
   using namespace hash_table::single_number;
-  REQUIRE(sort(create(1, 0)) == 0);
-  REQUIRE(sort(create(3, 1)) == 1);
-  REQUIRE(sort(create(5, 2)) == 2);
-  REQUIRE(sort(create(6, 2)) == 2);
-  REQUIRE(sort(hash_table::single_number::benchmark()) == 900);
+  REQUIRE(simple(create(1, 0)) == 0);
+  REQUIRE(simple(create(3, 1)) == 1);
+  REQUIRE(simple(create(5, 2)) == 2);
+  REQUIRE(simple(create(6, 2)) == 2);
+  REQUIRE(simple(hash_table::single_number::benchmark()) == 99'999);
 }
 
-TEST_CASE("hash_table::single_number::fast")
+TEST_CASE("hash_table::single_number::accumulate")
 {
   using namespace hash_table::single_number;
-  REQUIRE(fast(create(1, 0)) == 0);
-  REQUIRE(fast(create(3, 1)) == 1);
-  REQUIRE(fast(create(5, 2)) == 2);
-  REQUIRE(fast(create(6, 2)) == 2);
-  REQUIRE(fast(hash_table::single_number::benchmark()) == 900);
+  REQUIRE(accumulate(create(1, 0)) == 0);
+  REQUIRE(accumulate(create(3, 1)) == 1);
+  REQUIRE(accumulate(create(5, 2)) == 2);
+  REQUIRE(accumulate(create(6, 2)) == 2);
+  REQUIRE(accumulate(hash_table::single_number::benchmark()) == 99'999);
+}
+
+TEST_CASE("hash_table::single_number::parallel")
+{
+  using namespace hash_table::single_number;
+  REQUIRE(parallel(create(1, 0)) == 0);
+  REQUIRE(parallel(create(3, 1)) == 1);
+  REQUIRE(parallel(create(5, 2)) == 2);
+  REQUIRE(parallel(create(6, 2)) == 2);
+  REQUIRE(parallel(hash_table::single_number::benchmark()) == 99'999);
 }
 
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS || 1
+#if ENABLE_BENCHMARKS
 
 #define BENCHMARK_ITERATIONS 1'000
 
-static void hash_table_single_number_sort(benchmark::State& state)
+static void hash_table_single_number_simple(benchmark::State& state)
 {
   const auto nums = hash_table::single_number::benchmark();
-  std::vector<std::vector<int>> data;
-  data.reserve(BENCHMARK_ITERATIONS);
-  for (std::size_t i = 0, size = nums.size(); i < size; i++) {
-    data.emplace_back(nums);
-  }
-  auto it = data.begin();
   for (auto _ : state) {
-    auto result = hash_table::single_number::sort(*it);
+    auto result = hash_table::single_number::simple(nums);
     benchmark::DoNotOptimize(result);
-    ++it;
   }
 }
 
-BENCHMARK(hash_table_single_number_sort)->Iterations(BENCHMARK_ITERATIONS);
+BENCHMARK(hash_table_single_number_simple)->Iterations(BENCHMARK_ITERATIONS);
 
-static void hash_table_single_number_fast(benchmark::State& state)
+static void hash_table_single_number_accumulate(benchmark::State& state)
 {
   const auto nums = hash_table::single_number::benchmark();
-  std::vector<std::vector<int>> data;
-  data.reserve(BENCHMARK_ITERATIONS);
-  for (std::size_t i = 0, size = nums.size(); i < size; i++) {
-    data.emplace_back(nums);
-  }
-  auto it = data.begin();
   for (auto _ : state) {
-    auto result = hash_table::single_number::fast(*it);
+    auto result = hash_table::single_number::accumulate(nums);
     benchmark::DoNotOptimize(result);
-    ++it;
   }
 }
 
-BENCHMARK(hash_table_single_number_fast)->Iterations(BENCHMARK_ITERATIONS);
+BENCHMARK(hash_table_single_number_accumulate)->Iterations(BENCHMARK_ITERATIONS);
+
+static void hash_table_single_number_parallel(benchmark::State& state)
+{
+  const auto nums = hash_table::single_number::benchmark();
+  for (auto _ : state) {
+    auto result = hash_table::single_number::parallel(nums);
+    benchmark::DoNotOptimize(result);
+  }
+}
+
+BENCHMARK(hash_table_single_number_parallel)->Iterations(BENCHMARK_ITERATIONS);
 
 #endif  // ENABLE_BENCHMARKS
