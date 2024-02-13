@@ -1,16 +1,16 @@
 // https://leetcode.com/problems/guess-number-higher-or-lower/
-// -------------------------------------------------------------------------------------------------------------------
-// Benchmark                                                                              Time        CPU   Iterations
-// -------------------------------------------------------------------------------------------------------------------
-// algorithms_guess_number_higher_or_lower_simple/123/2147483646                       27.5 ns    27.0 ns     24888889
-// algorithms_guess_number_higher_or_lower_integer_range/123/2147483646                14.2 ns    14.1 ns     49777778
-// algorithms_guess_number_higher_or_lower_const_integer_range/123/2147483646          9.23 ns    9.00 ns     74666667
-// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646                12.2 ns    11.7 ns     56000000
-// algorithms_guess_number_higher_or_lower_const_bidirectional/123/2147483646          11.9 ns    11.2 ns     56000000
-// algorithms_guess_number_higher_or_lower_random_access/123/2147483646                16.5 ns    16.4 ns     44800000
-// algorithms_guess_number_higher_or_lower_const_random_access/123/2147483646          16.5 ns    16.4 ns     44800000
-// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646         8.73 ns    8.79 ns    112000000
-// algorithms_guess_number_higher_or_lower_const_legacy_random_access/123/2147483646   8.87 ns    8.79 ns     74666667
+// ---------------------------------------------------------------------------------------------------------------------
+// Benchmark                                                                                Time        CPU   Iterations
+// ---------------------------------------------------------------------------------------------------------------------
+// binary_search_guess_number_higher_or_lower_simple/123/2147483646                      27.5 ns    27.0 ns     24888889
+// binary_search_guess_number_higher_or_lower_integer_range/123/2147483646               14.2 ns    14.1 ns     49777778
+// binary_search_guess_number_higher_or_lower_const_integer_range/123/2147483646         9.23 ns    9.00 ns     74666667
+// binary_search_guess_number_higher_or_lower_bidirectional/123/2147483646               12.2 ns    11.7 ns     56000000
+// binary_search_guess_number_higher_or_lower_const_bidirectional/123/2147483646         11.9 ns    11.2 ns     56000000
+// binary_search_guess_number_higher_or_lower_random_access/123/2147483646               16.5 ns    16.4 ns     44800000
+// binary_search_guess_number_higher_or_lower_const_random_access/123/2147483646         16.5 ns    16.4 ns     44800000
+// binary_search_guess_number_higher_or_lower_legacy_random_access/123/2147483646        8.73 ns    8.79 ns    112000000
+// binary_search_guess_number_higher_or_lower_const_legacy_random_access/123/2147483646  8.87 ns    8.79 ns     74666667
 
 #include <boost/range/irange.hpp>
 #include <common.hpp>
@@ -21,7 +21,7 @@
 #include <utility>
 #include <cassert>
 
-namespace algorithms::guess_number_higher_or_lower {
+namespace binary_search::guess_number_higher_or_lower {
 
 // =====================================================================================================================
 // Definitions
@@ -466,79 +466,79 @@ int guess(int i)
   return 0;
 }
 
-}  // namespace algorithms::guess_number_higher_or_lower
+}  // namespace binary_search::guess_number_higher_or_lower
 
 #if ENABLE_TESTS
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::simple")
+TEST_CASE("binary_search::guess_number_higher_or_lower::simple")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::simple(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::simple(8) == i);
   }
 }
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::integer_range")
+TEST_CASE("binary_search::guess_number_higher_or_lower::integer_range")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::integer_range(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::integer_range(8) == i);
   }
 }
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::const_integer_range")
+TEST_CASE("binary_search::guess_number_higher_or_lower::const_integer_range")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::const_integer_range(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::const_integer_range(8) == i);
   }
 }
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::bidirectional")
+TEST_CASE("binary_search::guess_number_higher_or_lower::bidirectional")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::bidirectional(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::bidirectional(8) == i);
   }
 }
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::const_bidirectional")
+TEST_CASE("binary_search::guess_number_higher_or_lower::const_bidirectional")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::const_bidirectional(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::const_bidirectional(8) == i);
   }
 }
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::random_access")
+TEST_CASE("binary_search::guess_number_higher_or_lower::random_access")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::random_access(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::random_access(8) == i);
   }
 }
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::const_random_access")
+TEST_CASE("binary_search::guess_number_higher_or_lower::const_random_access")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::const_random_access(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::const_random_access(8) == i);
   }
 }
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::legacy_random_access")
+TEST_CASE("binary_search::guess_number_higher_or_lower::legacy_random_access")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::legacy_random_access(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::legacy_random_access(8) == i);
   }
 }
 
-TEST_CASE("algorithms::guess_number_higher_or_lower::const_legacy_random_access")
+TEST_CASE("binary_search::guess_number_higher_or_lower::const_legacy_random_access")
 {
   for (auto i = 1; i <= 8; i++) {
-    algorithms::guess_number_higher_or_lower::number = i;
-    REQUIRE(algorithms::guess_number_higher_or_lower::const_legacy_random_access(8) == i);
+    binary_search::guess_number_higher_or_lower::number = i;
+    REQUIRE(binary_search::guess_number_higher_or_lower::const_legacy_random_access(8) == i);
   }
 }
 
@@ -546,129 +546,129 @@ TEST_CASE("algorithms::guess_number_higher_or_lower::const_legacy_random_access"
 
 #if ENABLE_BENCHMARKS
 
-static void algorithms_guess_number_higher_or_lower_simple(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_simple(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::simple(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::simple(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_simple)
+BENCHMARK(binary_search_guess_number_higher_or_lower_simple)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
-static void algorithms_guess_number_higher_or_lower_integer_range(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_integer_range(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::integer_range(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::integer_range(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_integer_range)
+BENCHMARK(binary_search_guess_number_higher_or_lower_integer_range)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
-static void algorithms_guess_number_higher_or_lower_const_integer_range(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_const_integer_range(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::const_integer_range(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::const_integer_range(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_const_integer_range)
+BENCHMARK(binary_search_guess_number_higher_or_lower_const_integer_range)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
-static void algorithms_guess_number_higher_or_lower_bidirectional(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_bidirectional(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::bidirectional(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::bidirectional(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_bidirectional)
+BENCHMARK(binary_search_guess_number_higher_or_lower_bidirectional)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
-static void algorithms_guess_number_higher_or_lower_const_bidirectional(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_const_bidirectional(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::const_bidirectional(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::const_bidirectional(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_const_bidirectional)
+BENCHMARK(binary_search_guess_number_higher_or_lower_const_bidirectional)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
-static void algorithms_guess_number_higher_or_lower_random_access(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_random_access(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::random_access(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::random_access(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_random_access)
+BENCHMARK(binary_search_guess_number_higher_or_lower_random_access)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
-static void algorithms_guess_number_higher_or_lower_const_random_access(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_const_random_access(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::const_random_access(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::const_random_access(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_const_random_access)
+BENCHMARK(binary_search_guess_number_higher_or_lower_const_random_access)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
-static void algorithms_guess_number_higher_or_lower_legacy_random_access(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_legacy_random_access(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::legacy_random_access(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::legacy_random_access(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_legacy_random_access)
+BENCHMARK(binary_search_guess_number_higher_or_lower_legacy_random_access)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 
-static void algorithms_guess_number_higher_or_lower_const_legacy_random_access(benchmark::State& state)
+static void binary_search_guess_number_higher_or_lower_const_legacy_random_access(benchmark::State& state)
 {
-  algorithms::guess_number_higher_or_lower::number = state.range(0);
+  binary_search::guess_number_higher_or_lower::number = state.range(0);
   for (auto _ : state) {
-    auto result = algorithms::guess_number_higher_or_lower::const_legacy_random_access(state.range(1));
+    auto result = binary_search::guess_number_higher_or_lower::const_legacy_random_access(state.range(1));
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_guess_number_higher_or_lower_const_legacy_random_access)
+BENCHMARK(binary_search_guess_number_higher_or_lower_const_legacy_random_access)
   ->Args({ 123, std::numeric_limits<int>::max() - 1 });
 // clang-format on
 

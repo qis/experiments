@@ -2,14 +2,14 @@
 // ----------------------------------------------------------------------------------------------------------
 // Benchmark                                                                Time             CPU   Iterations
 // ----------------------------------------------------------------------------------------------------------
-// algorithms_merge_k_sorted_lists_simple/16/8000/iterations:8        5338875 ns      5859375 ns            8
-// algorithms_merge_k_sorted_lists_simple/8000/16/iterations:8     2028185525 ns   1960937500 ns            8
-// algorithms_merge_k_sorted_lists_simple_tbb/16/8000/iterations:8  106614162 ns     54687500 ns            8
-// algorithms_merge_k_sorted_lists_simple_tbb/8000/16/iterations:8  828158013 ns    351562500 ns            8
-// algorithms_merge_k_sorted_lists_successive/16/8000/iterations:8    1991712 ns      5859375 ns            8
-// algorithms_merge_k_sorted_lists_successive/8000/16/iterations:8 2972353687 ns   2859375000 ns            8
-// algorithms_merge_k_sorted_lists_cheat/16/8000/iterations:8         2414363 ns      1953125 ns            8
-// algorithms_merge_k_sorted_lists_cheat/8000/16/iterations:8         1987888 ns      1953125 ns            8
+// linked_lists_merge_k_sorted_lists_simple/16/8000/iterations:8        5338875 ns      5859375 ns            8
+// linked_lists_merge_k_sorted_lists_simple/8000/16/iterations:8     2028185525 ns   1960937500 ns            8
+// linked_lists_merge_k_sorted_lists_simple_tbb/16/8000/iterations:8  106614162 ns     54687500 ns            8
+// linked_lists_merge_k_sorted_lists_simple_tbb/8000/16/iterations:8  828158013 ns    351562500 ns            8
+// linked_lists_merge_k_sorted_lists_successive/16/8000/iterations:8    1991712 ns      5859375 ns            8
+// linked_lists_merge_k_sorted_lists_successive/8000/16/iterations:8 2972353687 ns   2859375000 ns            8
+// linked_lists_merge_k_sorted_lists_cheat/16/8000/iterations:8         2414363 ns      1953125 ns            8
+// linked_lists_merge_k_sorted_lists_cheat/8000/16/iterations:8         1987888 ns      1953125 ns            8
 
 #include <boost/container/static_vector.hpp>
 #include <boost/core/noncopyable.hpp>
@@ -26,7 +26,7 @@
 #include <utility>
 #include <vector>
 
-namespace algorithms::merge_k_sorted_lists {
+namespace linked_lists::merge_k_sorted_lists {
 
 // =====================================================================================================================
 // Definitions
@@ -301,14 +301,14 @@ auto benchmark(std::size_t lists, std::size_t length)
   return inputs;
 }
 
-}  // namespace algorithms::merge_k_sorted_lists
+}  // namespace linked_lists::merge_k_sorted_lists
 
 #if ENABLE_TESTS
 
-TEST_CASE("algorithms::merge_k_sorted_lists::simple")
+TEST_CASE("linked_lists::merge_k_sorted_lists::simple")
 {
-  auto data = algorithms::merge_k_sorted_lists::test();
-  auto list = algorithms::merge_k_sorted_lists::simple(data->lists);
+  auto data = linked_lists::merge_k_sorted_lists::test();
+  auto list = linked_lists::merge_k_sorted_lists::simple(data->lists);
   for (auto v : data->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
@@ -316,10 +316,10 @@ TEST_CASE("algorithms::merge_k_sorted_lists::simple")
   }
 }
 
-TEST_CASE("algorithms::merge_k_sorted_lists::tbb")
+TEST_CASE("linked_lists::merge_k_sorted_lists::tbb")
 {
-  auto data = algorithms::merge_k_sorted_lists::test();
-  auto list = algorithms::merge_k_sorted_lists::simple_tbb(data->lists);
+  auto data = linked_lists::merge_k_sorted_lists::test();
+  auto list = linked_lists::merge_k_sorted_lists::simple_tbb(data->lists);
   for (auto v : data->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
@@ -327,10 +327,10 @@ TEST_CASE("algorithms::merge_k_sorted_lists::tbb")
   }
 }
 
-TEST_CASE("algorithms::merge_k_sorted_lists::successive")
+TEST_CASE("linked_lists::merge_k_sorted_lists::successive")
 {
-  auto data = algorithms::merge_k_sorted_lists::test();
-  auto list = algorithms::merge_k_sorted_lists::successive(data->lists);
+  auto data = linked_lists::merge_k_sorted_lists::test();
+  auto list = linked_lists::merge_k_sorted_lists::successive(data->lists);
   for (auto v : data->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
@@ -338,10 +338,10 @@ TEST_CASE("algorithms::merge_k_sorted_lists::successive")
   }
 }
 
-TEST_CASE("algorithms::merge_k_sorted_lists::cheat")
+TEST_CASE("linked_lists::merge_k_sorted_lists::cheat")
 {
-  auto data = algorithms::merge_k_sorted_lists::test();
-  auto list = algorithms::merge_k_sorted_lists::cheat(data->lists);
+  auto data = linked_lists::merge_k_sorted_lists::test();
+  auto list = linked_lists::merge_k_sorted_lists::cheat(data->lists);
   for (auto v : data->compare) {
     REQUIRE(list);
     REQUIRE(list->value == v);
@@ -353,61 +353,61 @@ TEST_CASE("algorithms::merge_k_sorted_lists::cheat")
 
 #if ENABLE_BENCHMARKS
 
-static void algorithms_merge_k_sorted_lists_simple(benchmark::State& state)
+static void linked_lists_merge_k_sorted_lists_simple(benchmark::State& state)
 {
   const auto lists = static_cast<std::size_t>(state.range(0));
   const auto length = static_cast<std::size_t>(state.range(1));
-  const auto data = algorithms::merge_k_sorted_lists::benchmark<8>(lists, length);
+  const auto data = linked_lists::merge_k_sorted_lists::benchmark<8>(lists, length);
   auto input = data.begin();
   for (auto _ : state) {
-    auto result = algorithms::merge_k_sorted_lists::simple((*input)->lists);
+    auto result = linked_lists::merge_k_sorted_lists::simple((*input)->lists);
     benchmark::DoNotOptimize(result);
     input = std::next(input);
   }
 }
-BENCHMARK(algorithms_merge_k_sorted_lists_simple)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
+BENCHMARK(linked_lists_merge_k_sorted_lists_simple)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
 
-static void algorithms_merge_k_sorted_lists_simple_tbb(benchmark::State& state)
+static void linked_lists_merge_k_sorted_lists_simple_tbb(benchmark::State& state)
 {
   const auto lists = static_cast<std::size_t>(state.range(0));
   const auto length = static_cast<std::size_t>(state.range(1));
   const auto grain = lists / std::thread::hardware_concurrency() * 2;
-  const auto data = algorithms::merge_k_sorted_lists::benchmark<8>(lists, length);
+  const auto data = linked_lists::merge_k_sorted_lists::benchmark<8>(lists, length);
   auto input = data.begin();
   for (auto _ : state) {
-    auto result = algorithms::merge_k_sorted_lists::simple_tbb((*input)->lists, grain);
+    auto result = linked_lists::merge_k_sorted_lists::simple_tbb((*input)->lists, grain);
     benchmark::DoNotOptimize(result);
     input = std::next(input);
   }
 }
-BENCHMARK(algorithms_merge_k_sorted_lists_simple_tbb)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
+BENCHMARK(linked_lists_merge_k_sorted_lists_simple_tbb)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
 
-static void algorithms_merge_k_sorted_lists_successive(benchmark::State& state)
+static void linked_lists_merge_k_sorted_lists_successive(benchmark::State& state)
 {
   const auto lists = static_cast<std::size_t>(state.range(0));
   const auto length = static_cast<std::size_t>(state.range(1));
-  const auto data = algorithms::merge_k_sorted_lists::benchmark<8>(lists, length);
+  const auto data = linked_lists::merge_k_sorted_lists::benchmark<8>(lists, length);
   auto input = data.begin();
   for (auto _ : state) {
-    auto result = algorithms::merge_k_sorted_lists::successive((*input)->lists);
+    auto result = linked_lists::merge_k_sorted_lists::successive((*input)->lists);
     benchmark::DoNotOptimize(result);
     input = std::next(input);
   }
 }
-BENCHMARK(algorithms_merge_k_sorted_lists_successive)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
+BENCHMARK(linked_lists_merge_k_sorted_lists_successive)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
 
-static void algorithms_merge_k_sorted_lists_cheat(benchmark::State& state)
+static void linked_lists_merge_k_sorted_lists_cheat(benchmark::State& state)
 {
   const auto lists = static_cast<std::size_t>(state.range(0));
   const auto length = static_cast<std::size_t>(state.range(1));
-  const auto data = algorithms::merge_k_sorted_lists::benchmark<8>(lists, length);
+  const auto data = linked_lists::merge_k_sorted_lists::benchmark<8>(lists, length);
   auto input = data.begin();
   for (auto _ : state) {
-    auto result = algorithms::merge_k_sorted_lists::cheat((*input)->lists);
+    auto result = linked_lists::merge_k_sorted_lists::cheat((*input)->lists);
     benchmark::DoNotOptimize(result);
     input = std::next(input);
   }
 }
-BENCHMARK(algorithms_merge_k_sorted_lists_cheat)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
+BENCHMARK(linked_lists_merge_k_sorted_lists_cheat)->Args({ 16, 8'000 })->Args({ 8'000, 16 })->Iterations(8);
 
 #endif  // ENABLE_BENCHMARKS

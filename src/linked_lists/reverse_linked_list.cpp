@@ -2,10 +2,10 @@
 // ---------------------------------------------------------------------------------------
 // Benchmark                                             Time             CPU   Iterations
 // ---------------------------------------------------------------------------------------
-// algorithms_reverse_linked_list_simple/100         0.854 ns        0.816 ns    746666667
-// algorithms_reverse_linked_list_simple/100000      0.853 ns        0.837 ns    746666667
-// algorithms_reverse_linked_list_slist/100          0.641 ns        0.641 ns   1000000000
-// algorithms_reverse_linked_list_slist/100000       0.644 ns        0.656 ns   1000000000
+// linked_lists_reverse_linked_list_simple/100         0.854 ns        0.816 ns    746666667
+// linked_lists_reverse_linked_list_simple/100000      0.853 ns        0.837 ns    746666667
+// linked_lists_reverse_linked_list_slist/100          0.641 ns        0.641 ns   1000000000
+// linked_lists_reverse_linked_list_slist/100000       0.644 ns        0.656 ns   1000000000
 
 #include <boost/intrusive/linear_slist_algorithms.hpp>
 #include <boost/noncopyable.hpp>
@@ -15,7 +15,7 @@
 #include <vector>
 #include <cassert>
 
-namespace algorithms::reverse_linked_list {
+namespace linked_lists::reverse_linked_list {
 
 // =====================================================================================================================
 // Definitions
@@ -96,14 +96,14 @@ inline auto benchmark(std::size_t size)
   return create(values);
 }
 
-}  // namespace algorithms::reverse_linked_list
+}  // namespace linked_lists::reverse_linked_list
 
 #if ENABLE_TESTS
 
-TEST_CASE("algorithms::reverse_linked_list::simple")
+TEST_CASE("linked_lists::reverse_linked_list::simple")
 {
-  auto src = algorithms::reverse_linked_list::create({ 1, 2, 3, 4, 5 });
-  auto dst = algorithms::reverse_linked_list::simple(src->head);
+  auto src = linked_lists::reverse_linked_list::create({ 1, 2, 3, 4, 5 });
+  auto dst = linked_lists::reverse_linked_list::simple(src->head);
   for (auto i : { 5, 4, 3, 2, 1 }) {
     REQUIRE(dst);
     REQUIRE(dst->value == i);
@@ -112,10 +112,10 @@ TEST_CASE("algorithms::reverse_linked_list::simple")
   REQUIRE(!dst);
 }
 
-TEST_CASE("algorithms::reverse_linked_list::slist")
+TEST_CASE("linked_lists::reverse_linked_list::slist")
 {
-  auto src = algorithms::reverse_linked_list::create({ 1, 2, 3, 4, 5 });
-  auto dst = algorithms::reverse_linked_list::slist(src->head);
+  auto src = linked_lists::reverse_linked_list::create({ 1, 2, 3, 4, 5 });
+  auto dst = linked_lists::reverse_linked_list::slist(src->head);
   for (auto i : { 5, 4, 3, 2, 1 }) {
     REQUIRE(dst);
     REQUIRE(dst->value == i);
@@ -128,34 +128,34 @@ TEST_CASE("algorithms::reverse_linked_list::slist")
 
 #if ENABLE_BENCHMARKS
 
-static void algorithms_reverse_linked_list_simple(benchmark::State& state)
+static void linked_lists_reverse_linked_list_simple(benchmark::State& state)
 {
   const auto size = static_cast<std::size_t>(state.range(0));
-  const auto data = algorithms::reverse_linked_list::benchmark(size);
+  const auto data = linked_lists::reverse_linked_list::benchmark(size);
   for (auto _ : state) {
-    auto result = algorithms::reverse_linked_list::simple(data->head);
+    auto result = linked_lists::reverse_linked_list::simple(data->head);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_reverse_linked_list_simple)
+BENCHMARK(linked_lists_reverse_linked_list_simple)
   ->Args({ 100 })
   ->Args({ 100'000 });
 // clang-format on
 
-static void algorithms_reverse_linked_list_slist(benchmark::State& state)
+static void linked_lists_reverse_linked_list_slist(benchmark::State& state)
 {
   const auto size = static_cast<std::size_t>(state.range(0));
-  const auto data = algorithms::reverse_linked_list::benchmark(size);
+  const auto data = linked_lists::reverse_linked_list::benchmark(size);
   for (auto _ : state) {
-    auto result = algorithms::reverse_linked_list::slist(data->head);
+    auto result = linked_lists::reverse_linked_list::slist(data->head);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_reverse_linked_list_slist)
+BENCHMARK(linked_lists_reverse_linked_list_slist)
   ->Args({ 100 })
   ->Args({ 100'000 });
 // clang-format on

@@ -2,12 +2,12 @@
 // -------------------------------------------------------------------------------------
 // Benchmark                                           Time             CPU   Iterations
 // -------------------------------------------------------------------------------------
-// algorithms_add_two_numbers_simple/90/90          2869 ns         2790 ns       224000
-// algorithms_add_two_numbers_simple/90/40          2703 ns         2637 ns       248889
-// algorithms_add_two_numbers_simple/40/90          2717 ns         2699 ns       248889
-// algorithms_add_two_numbers_optimized/90/90        159 ns          157 ns      4480000
-// algorithms_add_two_numbers_optimized/90/40        164 ns          160 ns      4480000
-// algorithms_add_two_numbers_optimized/40/90        164 ns          160 ns      4480000
+// linked_lists_add_two_numbers_simple/90/90          2869 ns         2790 ns       224000
+// linked_lists_add_two_numbers_simple/90/40          2703 ns         2637 ns       248889
+// linked_lists_add_two_numbers_simple/40/90          2717 ns         2699 ns       248889
+// linked_lists_add_two_numbers_optimized/90/90        159 ns          157 ns      4480000
+// linked_lists_add_two_numbers_optimized/90/40        164 ns          160 ns      4480000
+// linked_lists_add_two_numbers_optimized/40/90        164 ns          160 ns      4480000
 
 #include <boost/noncopyable.hpp>
 #include <common.hpp>
@@ -16,7 +16,7 @@
 #include <utility>
 #include <vector>
 
-namespace algorithms::add_two_numbers {
+namespace linked_lists::add_two_numbers {
 
 // =====================================================================================================================
 // Definitions
@@ -167,17 +167,17 @@ auto test()
   return data;
 }
 
-}  // namespace algorithms::add_two_numbers
+}  // namespace linked_lists::add_two_numbers
 
 #if ENABLE_TESTS
 
-TEST_CASE("algorithms::add_two_numbers::simple")
+TEST_CASE("linked_lists::add_two_numbers::simple")
 {
-  const auto data = algorithms::add_two_numbers::test();
+  const auto data = linked_lists::add_two_numbers::test();
   auto n1 = data.l1->head;
   auto n2 = data.l2->head;
   auto n3 = data.l3->head;
-  auto head = algorithms::add_two_numbers::simple(n1, n2);
+  auto head = linked_lists::add_two_numbers::simple(n1, n2);
   REQUIRE(head);
   for (auto node = head; node; node = node->next) {
     REQUIRE(n3);
@@ -186,13 +186,13 @@ TEST_CASE("algorithms::add_two_numbers::simple")
   }
 }
 
-TEST_CASE("algorithms::add_two_numbers::optimized")
+TEST_CASE("linked_lists::add_two_numbers::optimized")
 {
-  const auto data = algorithms::add_two_numbers::test();
+  const auto data = linked_lists::add_two_numbers::test();
   auto n1 = data.l1->head;
   auto n2 = data.l2->head;
   auto n3 = data.l3->head;
-  auto head = algorithms::add_two_numbers::optimized(n1, n2);
+  auto head = linked_lists::add_two_numbers::optimized(n1, n2);
   REQUIRE(head);
   for (auto node = head; node; node = node->next) {
     REQUIRE(n3);
@@ -205,37 +205,37 @@ TEST_CASE("algorithms::add_two_numbers::optimized")
 
 #if ENABLE_BENCHMARKS
 
-static void algorithms_add_two_numbers_simple(benchmark::State& state)
+static void linked_lists_add_two_numbers_simple(benchmark::State& state)
 {
   const auto s1 = static_cast<std::size_t>(state.range(0));
   const auto s2 = static_cast<std::size_t>(state.range(1));
-  const auto data = algorithms::add_two_numbers::benchmark(s1, s2);
+  const auto data = linked_lists::add_two_numbers::benchmark(s1, s2);
   for (auto _ : state) {
-    auto result = algorithms::add_two_numbers::simple(data.l1->head, data.l2->head);
+    auto result = linked_lists::add_two_numbers::simple(data.l1->head, data.l2->head);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_add_two_numbers_simple)
+BENCHMARK(linked_lists_add_two_numbers_simple)
   ->Args({ 90, 90 })
   ->Args({ 90, 40 })
   ->Args({ 40, 90 });
 // clang-format on
 
-static void algorithms_add_two_numbers_optimized(benchmark::State& state)
+static void linked_lists_add_two_numbers_optimized(benchmark::State& state)
 {
   const auto s1 = static_cast<std::size_t>(state.range(0));
   const auto s2 = static_cast<std::size_t>(state.range(1));
-  const auto data = algorithms::add_two_numbers::benchmark(s1, s2);
+  const auto data = linked_lists::add_two_numbers::benchmark(s1, s2);
   for (auto _ : state) {
-    auto result = algorithms::add_two_numbers::optimized(data.l1->head, data.l2->head);
+    auto result = linked_lists::add_two_numbers::optimized(data.l1->head, data.l2->head);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_add_two_numbers_optimized)
+BENCHMARK(linked_lists_add_two_numbers_optimized)
   ->Args({ 90, 90 })
   ->Args({ 90, 40 })
   ->Args({ 40, 90 });

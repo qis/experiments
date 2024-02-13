@@ -2,19 +2,19 @@
 // -------------------------------------------------------------------------------------------
 // Benchmark                                                 Time             CPU   Iterations
 // -------------------------------------------------------------------------------------------
-// algorithms_binary_search_simple/150000/100001          14.6 ns         14.4 ns     49777778
-// algorithms_binary_search_simple/150000/100000          13.0 ns         13.2 ns     49777778
-// algorithms_binary_search_optimized/150000/100001       14.8 ns         14.8 ns     49777778
-// algorithms_binary_search_optimized/150000/100000       15.1 ns         14.6 ns     44800000
-// algorithms_binary_search_standard/150000/100001        8.39 ns         8.54 ns     89600000
-// algorithms_binary_search_standard/150000/100000        8.62 ns         8.79 ns     74666667
+// binary_search_binary_search_simple/150000/100001          14.6 ns         14.4 ns     49777778
+// binary_search_binary_search_simple/150000/100000          13.0 ns         13.2 ns     49777778
+// binary_search_binary_search_optimized/150000/100001       14.8 ns         14.8 ns     49777778
+// binary_search_binary_search_optimized/150000/100000       15.1 ns         14.6 ns     44800000
+// binary_search_binary_search_standard/150000/100001        8.39 ns         8.54 ns     89600000
+// binary_search_binary_search_standard/150000/100000        8.62 ns         8.79 ns     74666667
 
 #include <common.hpp>
 #include <algorithm>
 #include <iostream>
 #include <vector>
 
-namespace algorithms::binary_search {
+namespace binary_search::binary_search {
 
 // =====================================================================================================================
 // Solutions
@@ -96,91 +96,91 @@ void test()
   std::cout << simple(nums, 4) << std::endl;
 }
 
-}  // namespace algorithms::binary_search
+}  // namespace binary_search::binary_search
 
 #if ENABLE_TESTS
 
-TEST_CASE("algorithms::binary_search::simple")
+TEST_CASE("binary_search::binary_search::simple")
 {
-  auto nums = algorithms::binary_search::create(15);
-  REQUIRE(algorithms::binary_search::simple(nums, 3) == -1);
-  REQUIRE(algorithms::binary_search::simple(nums, 4) == 2);
-  nums = algorithms::binary_search::create(2);
-  REQUIRE(algorithms::binary_search::simple(nums, -1) == -1);
-  REQUIRE(algorithms::binary_search::simple(nums, 2) == 1);
+  auto nums = binary_search::binary_search::create(15);
+  REQUIRE(binary_search::binary_search::simple(nums, 3) == -1);
+  REQUIRE(binary_search::binary_search::simple(nums, 4) == 2);
+  nums = binary_search::binary_search::create(2);
+  REQUIRE(binary_search::binary_search::simple(nums, -1) == -1);
+  REQUIRE(binary_search::binary_search::simple(nums, 2) == 1);
 }
 
-TEST_CASE("algorithms::binary_search::optimized")
+TEST_CASE("binary_search::binary_search::optimized")
 {
-  auto nums = algorithms::binary_search::create(15);
-  REQUIRE(algorithms::binary_search::optimized(nums, 3) == -1);
-  REQUIRE(algorithms::binary_search::optimized(nums, 4) == 2);
-  nums = algorithms::binary_search::create(2);
-  REQUIRE(algorithms::binary_search::simple(nums, -1) == -1);
-  REQUIRE(algorithms::binary_search::simple(nums, 2) == 1);
+  auto nums = binary_search::binary_search::create(15);
+  REQUIRE(binary_search::binary_search::optimized(nums, 3) == -1);
+  REQUIRE(binary_search::binary_search::optimized(nums, 4) == 2);
+  nums = binary_search::binary_search::create(2);
+  REQUIRE(binary_search::binary_search::simple(nums, -1) == -1);
+  REQUIRE(binary_search::binary_search::simple(nums, 2) == 1);
 }
 
-TEST_CASE("algorithms::binary_search::standard")
+TEST_CASE("binary_search::binary_search::standard")
 {
-  auto nums = algorithms::binary_search::create(15);
-  REQUIRE(algorithms::binary_search::standard(nums, 3) == -1);
-  REQUIRE(algorithms::binary_search::standard(nums, 4) == 2);
-  nums = algorithms::binary_search::create(2);
-  REQUIRE(algorithms::binary_search::simple(nums, -1) == -1);
-  REQUIRE(algorithms::binary_search::simple(nums, 2) == 1);
+  auto nums = binary_search::binary_search::create(15);
+  REQUIRE(binary_search::binary_search::standard(nums, 3) == -1);
+  REQUIRE(binary_search::binary_search::standard(nums, 4) == 2);
+  nums = binary_search::binary_search::create(2);
+  REQUIRE(binary_search::binary_search::simple(nums, -1) == -1);
+  REQUIRE(binary_search::binary_search::simple(nums, 2) == 1);
 }
 
 #endif  // ENABLE_TESTS
 
 #if ENABLE_BENCHMARKS
 
-static void algorithms_binary_search_simple(benchmark::State& state)
+static void binary_search_binary_search_simple(benchmark::State& state)
 {
   const auto size = static_cast<std::size_t>(state.range(0));
   const auto target = state.range(1);
-  auto nums = algorithms::binary_search::create(size);
+  auto nums = binary_search::binary_search::create(size);
   for (auto _ : state) {
-    auto result = algorithms::binary_search::simple(nums, target);
+    auto result = binary_search::binary_search::simple(nums, target);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_binary_search_simple)
+BENCHMARK(binary_search_binary_search_simple)
   ->Args({ 150'000, 100'001 })
   ->Args({ 150'000, 100'000 });
 // clang-format on
 
-static void algorithms_binary_search_optimized(benchmark::State& state)
+static void binary_search_binary_search_optimized(benchmark::State& state)
 {
   const auto size = static_cast<std::size_t>(state.range(0));
   const auto target = state.range(1);
-  auto nums = algorithms::binary_search::create(size);
+  auto nums = binary_search::binary_search::create(size);
   for (auto _ : state) {
-    auto result = algorithms::binary_search::optimized(nums, target);
+    auto result = binary_search::binary_search::optimized(nums, target);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_binary_search_optimized)
+BENCHMARK(binary_search_binary_search_optimized)
   ->Args({ 150'000, 100'001 })
   ->Args({ 150'000, 100'000 });
 // clang-format on
 
-static void algorithms_binary_search_standard(benchmark::State& state)
+static void binary_search_binary_search_standard(benchmark::State& state)
 {
   const auto size = static_cast<std::size_t>(state.range(0));
   const auto target = state.range(1);
-  auto nums = algorithms::binary_search::create(size);
+  auto nums = binary_search::binary_search::create(size);
   for (auto _ : state) {
-    auto result = algorithms::binary_search::standard(nums, target);
+    auto result = binary_search::binary_search::standard(nums, target);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_binary_search_standard)
+BENCHMARK(binary_search_binary_search_standard)
   ->Args({ 150'000, 100'001 })
   ->Args({ 150'000, 100'000 });
 // clang-format on

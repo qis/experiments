@@ -2,12 +2,12 @@
 // ---------------------------------------------------------------------------------------------
 // Benchmark                                                   Time             CPU   Iterations
 // ---------------------------------------------------------------------------------------------
-// algorithms_linked_list_cycle_simple/80000/0         447161400 ns    453125000 ns            2
-// algorithms_linked_list_cycle_simple/80000/2000      447263750 ns    453125000 ns            2
-// algorithms_linked_list_cycle_simple/80000/60000     454168750 ns    460937500 ns            2
-// algorithms_linked_list_cycle_optimized/80000/0          71147 ns        69754 ns        11200
-// algorithms_linked_list_cycle_optimized/80000/2000      139324 ns       134969 ns         4978
-// algorithms_linked_list_cycle_optimized/80000/60000     104003 ns       100446 ns         5600
+// linked_lists_linked_list_cycle_simple/80000/0         447161400 ns    453125000 ns            2
+// linked_lists_linked_list_cycle_simple/80000/2000      447263750 ns    453125000 ns            2
+// linked_lists_linked_list_cycle_simple/80000/60000     454168750 ns    460937500 ns            2
+// linked_lists_linked_list_cycle_optimized/80000/0          71147 ns        69754 ns        11200
+// linked_lists_linked_list_cycle_optimized/80000/2000      139324 ns       134969 ns         4978
+// linked_lists_linked_list_cycle_optimized/80000/60000     104003 ns       100446 ns         5600
 
 #include <boost/container/static_vector.hpp>
 #include <boost/intrusive/linear_slist_algorithms.hpp>
@@ -17,7 +17,7 @@
 #include <memory>
 #include <vector>
 
-namespace algorithms::linked_list_cycle {
+namespace linked_lists::linked_list_cycle {
 
 // =====================================================================================================================
 // Definitions
@@ -144,65 +144,65 @@ inline auto benchmark(std::size_t size, std::size_t node)
   return data;
 }
 
-}  // namespace algorithms::linked_list_cycle
+}  // namespace linked_lists::linked_list_cycle
 
 #if ENABLE_TESTS
 
-TEST_CASE("algorithms::linked_list_cycle::simple")
+TEST_CASE("linked_lists::linked_list_cycle::simple")
 {
-  const auto data = algorithms::linked_list_cycle::test();
-  REQUIRE(!algorithms::linked_list_cycle::simple(data.v4->head));
-  REQUIRE(!algorithms::linked_list_cycle::simple(data.v1->head));
-  REQUIRE(algorithms::linked_list_cycle::simple(data.i4->head));
-  REQUIRE(algorithms::linked_list_cycle::simple(data.i2->head));
-  REQUIRE(algorithms::linked_list_cycle::simple(data.i1->head));
+  const auto data = linked_lists::linked_list_cycle::test();
+  REQUIRE(!linked_lists::linked_list_cycle::simple(data.v4->head));
+  REQUIRE(!linked_lists::linked_list_cycle::simple(data.v1->head));
+  REQUIRE(linked_lists::linked_list_cycle::simple(data.i4->head));
+  REQUIRE(linked_lists::linked_list_cycle::simple(data.i2->head));
+  REQUIRE(linked_lists::linked_list_cycle::simple(data.i1->head));
 }
 
-TEST_CASE("algorithms::linked_list_cycle::optimized")
+TEST_CASE("linked_lists::linked_list_cycle::optimized")
 {
-  const auto data = algorithms::linked_list_cycle::test();
-  REQUIRE(!algorithms::linked_list_cycle::optimized(data.v4->head));
-  REQUIRE(!algorithms::linked_list_cycle::optimized(data.v1->head));
-  REQUIRE(algorithms::linked_list_cycle::optimized(data.i4->head));
-  REQUIRE(algorithms::linked_list_cycle::optimized(data.i2->head));
-  REQUIRE(algorithms::linked_list_cycle::optimized(data.i1->head));
+  const auto data = linked_lists::linked_list_cycle::test();
+  REQUIRE(!linked_lists::linked_list_cycle::optimized(data.v4->head));
+  REQUIRE(!linked_lists::linked_list_cycle::optimized(data.v1->head));
+  REQUIRE(linked_lists::linked_list_cycle::optimized(data.i4->head));
+  REQUIRE(linked_lists::linked_list_cycle::optimized(data.i2->head));
+  REQUIRE(linked_lists::linked_list_cycle::optimized(data.i1->head));
 }
 
 #endif  // ENABLE_TESTS
 
 #if ENABLE_BENCHMARKS
 
-static void algorithms_linked_list_cycle_simple(benchmark::State& state)
+static void linked_lists_linked_list_cycle_simple(benchmark::State& state)
 {
   const auto size = static_cast<std::size_t>(state.range(0));
   const auto node = static_cast<std::size_t>(state.range(1));
-  const auto data = algorithms::linked_list_cycle::benchmark(size, node);
+  const auto data = linked_lists::linked_list_cycle::benchmark(size, node);
   for (auto _ : state) {
-    auto result = algorithms::linked_list_cycle::simple(data->head);
+    auto result = linked_lists::linked_list_cycle::simple(data->head);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_linked_list_cycle_simple)
+BENCHMARK(linked_lists_linked_list_cycle_simple)
   ->Args({ 80'000, 0 })
   ->Args({ 80'000, 2'000 })
   ->Args({ 80'000, 60'000 });
 // clang-format on
 
-static void algorithms_linked_list_cycle_optimized(benchmark::State& state)
+static void linked_lists_linked_list_cycle_optimized(benchmark::State& state)
 {
   const auto size = static_cast<std::size_t>(state.range(0));
   const auto node = static_cast<std::size_t>(state.range(1));
-  const auto data = algorithms::linked_list_cycle::benchmark(size, node);
+  const auto data = linked_lists::linked_list_cycle::benchmark(size, node);
   for (auto _ : state) {
-    auto result = algorithms::linked_list_cycle::optimized(data->head);
+    auto result = linked_lists::linked_list_cycle::optimized(data->head);
     benchmark::DoNotOptimize(result);
   }
 }
 
 // clang-format off
-BENCHMARK(algorithms_linked_list_cycle_optimized)
+BENCHMARK(linked_lists_linked_list_cycle_optimized)
   ->Args({ 80'000, 0 })
   ->Args({ 80'000, 2'000 })
   ->Args({ 80'000, 60'000 });
