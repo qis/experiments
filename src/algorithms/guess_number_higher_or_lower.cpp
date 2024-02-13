@@ -1,12 +1,12 @@
 // https://leetcode.com/problems/guess-number-higher-or-lower/
-// -------------------------------------------------------------------------------------------------------------------
-// Benchmark                                                                         Time             CPU   Iterations
-// -------------------------------------------------------------------------------------------------------------------
-// algorithms_guess_number_higher_or_lower_simple/123/2147483646                  27.4 ns         27.0 ns     24888889
-// algorithms_guess_number_higher_or_lower_integer_range/123/2147483646           9.37 ns         9.00 ns     74666667
-// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646           22.1 ns         20.9 ns     29866667
-// algorithms_guess_number_higher_or_lower_random_access/123/2147483646           22.1 ns         20.5 ns     32000000
-// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646    28.7 ns         27.8 ns     23578947
+// ---------------------------------------------------------------------------------------------------------------------
+// Benchmark                                                                           Time             CPU   Iterations
+// ---------------------------------------------------------------------------------------------------------------------
+// algorithms_guess_number_higher_or_lower_simple/123/2147483646                    27.6 ns         28.3 ns     24888889
+// algorithms_guess_number_higher_or_lower_integer_range/123/2147483646             9.22 ns         9.42 ns     74666667
+// algorithms_guess_number_higher_or_lower_bidirectional/123/2147483646             16.5 ns         16.0 ns     44800000
+// algorithms_guess_number_higher_or_lower_random_access/123/2147483646             11.4 ns         11.5 ns     64000000
+// algorithms_guess_number_higher_or_lower_legacy_random_access/123/2147483646      8.87 ns         8.79 ns     74666667
 
 #include <boost/range/irange.hpp>
 #include <common.hpp>
@@ -49,7 +49,7 @@ int simple(int n) noexcept
 
 int integer_range(int n) noexcept
 {
-  const auto range = boost::integer_range<int>(1, n + 1);
+  const auto range = boost::integer_range<int>(1, n);
   return *std::lower_bound(range.begin(), range.end(), 0, [](int lhs, int) noexcept {
     return guess(lhs) > 0;
   });
@@ -265,7 +265,7 @@ static_assert(legacy::random_access_iterator<legacy_random_access_iterator>);
 template <class Iterator>
 int standard(int n) noexcept
 {
-  return *std::lower_bound(Iterator{ 1 }, Iterator{ n + 1 }, 0, [](int lhs, int) noexcept {
+  return *std::lower_bound(Iterator{ 1 }, Iterator{ n }, 0, [](int lhs, int) noexcept {
     return guess(lhs) > 0;
   });
 }
