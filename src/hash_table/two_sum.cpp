@@ -177,7 +177,7 @@ std::vector<int> benchmark(std::size_t size, int target)
 
 }  // namespace hash_table::two_sum
 
-#if ENABLE_TESTS || 1
+#if ENABLE_TESTS
 
 TEST_CASE("hash_table::two_sum::simple")
 {
@@ -235,7 +235,7 @@ TEST_CASE("hash_table::two_sum::flat_multimap_lower_bound")
 
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS || 1
+#if ENABLE_BENCHMARKS
 
 static void hash_table_two_sum_simple(benchmark::State& state)
 {
