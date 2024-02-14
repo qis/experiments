@@ -9,9 +9,9 @@
 // hash_table_two_sum_flat_multimap/100000/5000                1187615 ns      1147461 ns          640
 // hash_table_two_sum_flat_multimap_lower_bound/100000/5000    1438727 ns      1395089 ns          448
 
+#include <common.hpp>
 #include <boost/container/flat_map.hpp>
 #include <boost/unordered/unordered_flat_map.hpp>
-#include <common.hpp>
 #include <algorithm>
 #include <unordered_map>
 #include <utility>

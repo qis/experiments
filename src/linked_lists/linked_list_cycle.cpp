@@ -9,10 +9,10 @@
 // linked_lists_linked_list_cycle_optimized/80000/2000      139324 ns       134969 ns         4978
 // linked_lists_linked_list_cycle_optimized/80000/60000     104003 ns       100446 ns         5600
 
+#include <common.hpp>
 #include <boost/container/static_vector.hpp>
 #include <boost/intrusive/linear_slist_algorithms.hpp>
 #include <boost/noncopyable.hpp>
-#include <common.hpp>
 #include <algorithm>
 #include <memory>
 #include <vector>

@@ -11,9 +11,9 @@
 // linked_lists_merge_k_sorted_lists_cheat/16/8000/iterations:8             2414363 ns      1953125 ns            8
 // linked_lists_merge_k_sorted_lists_cheat/8000/16/iterations:8             1987888 ns      1953125 ns            8
 
+#include <common.hpp>
 #include <boost/container/static_vector.hpp>
 #include <boost/core/noncopyable.hpp>
-#include <common.hpp>
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_for.h>
 #include <tbb/parallel_reduce.h>

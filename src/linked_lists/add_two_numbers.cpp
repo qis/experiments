@@ -9,8 +9,8 @@
 // linked_lists_add_two_numbers_optimized/90/40        164 ns          160 ns      4480000
 // linked_lists_add_two_numbers_optimized/40/90        164 ns          160 ns      4480000
 
-#include <boost/noncopyable.hpp>
 #include <common.hpp>
+#include <boost/noncopyable.hpp>
 #include <memory>
 #include <random>
 #include <utility>

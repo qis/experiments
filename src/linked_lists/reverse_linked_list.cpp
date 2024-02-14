@@ -7,9 +7,9 @@
 // linked_lists_reverse_linked_list_slist/100          0.641 ns        0.641 ns   1000000000
 // linked_lists_reverse_linked_list_slist/100000       0.644 ns        0.656 ns   1000000000
 
+#include <common.hpp>
 #include <boost/intrusive/linear_slist_algorithms.hpp>
 #include <boost/noncopyable.hpp>
-#include <common.hpp>
 #include <memory>
 #include <utility>
 #include <vector>

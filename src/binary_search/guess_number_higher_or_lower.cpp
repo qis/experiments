@@ -12,8 +12,8 @@
 // binary_search_guess_number_higher_or_lower_legacy_random_access/123/2147483646        8.73 ns    8.79 ns    112000000
 // binary_search_guess_number_higher_or_lower_const_legacy_random_access/123/2147483646  8.87 ns    8.79 ns     74666667
 
-#include <boost/range/irange.hpp>
 #include <common.hpp>
+#include <boost/range/irange.hpp>
 #include <algorithm>
 #include <compare>
 #include <iterator>
@@ -370,7 +370,8 @@ public:
   constexpr const_legacy_random_access_iterator(const_legacy_random_access_iterator&& other) noexcept = default;
   constexpr const_legacy_random_access_iterator(const const_legacy_random_access_iterator& other) noexcept = default;
   constexpr const_legacy_random_access_iterator& operator=(const_legacy_random_access_iterator&& other) noexcept = default;
-  constexpr const_legacy_random_access_iterator& operator=(const const_legacy_random_access_iterator& other) noexcept = default;
+  constexpr const_legacy_random_access_iterator& operator=(const const_legacy_random_access_iterator& other) noexcept =
+    default;
 
   // clang-format off
   constexpr reference operator*() const noexcept { return value_; }
