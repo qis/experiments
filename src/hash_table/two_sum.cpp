@@ -2,13 +2,15 @@
 // ---------------------------------------------------------------------------------------------------
 // Benchmark                                                         Time             CPU   Iterations
 // ---------------------------------------------------------------------------------------------------
-// hash_table_two_sum_simple/100000/5000                     810024500 ns    812500000 ns            1
-// hash_table_two_sum_unordered_map/100000/5000                4298166 ns      4141566 ns          166
-// hash_table_two_sum_flat_map/100000/5000                     1307352 ns      1283482 ns          560
-// hash_table_two_sum_flat_multimap/100000/5000                1182139 ns      1116071 ns          560
-// hash_table_two_sum_flat_multimap_lower_bound/100000/5000    1431198 ns      1380522 ns          498
+// hash_table_two_sum_simple/100000/5000                     805010200 ns    765625000 ns            1
+// hash_table_two_sum_unordered_map/100000/5000                4235409 ns      4141566 ns          166
+// hash_table_two_sum_flat_map/100000/5000                     1306154 ns      1227679 ns          560
+// hash_table_two_sum_unordered_flat_map/100000/5000           1058109 ns      1049805 ns          640
+// hash_table_two_sum_flat_multimap/100000/5000                1187615 ns      1147461 ns          640
+// hash_table_two_sum_flat_multimap_lower_bound/100000/5000    1438727 ns      1395089 ns          448
 
 #include <boost/container/flat_map.hpp>
+#include <boost/unordered/unordered_flat_map.hpp>
 #include <common.hpp>
 #include <algorithm>
 #include <unordered_map>
@@ -60,6 +62,25 @@ std::vector<int> flat_map(const std::vector<int>& nums, int target) noexcept
   const auto data = nums.data();
   const auto size = static_cast<int>(nums.size());
   boost::container::flat_map<int, int> table;
+  table.reserve(static_cast<std::size_t>(size));
+  table.emplace(nums[0], 0);
+  for (auto i = 1; i < size; i++) {
+    const auto v = data[i];
+    const auto d = target - v;
+    if (const auto it = table.find(d); it != table.end()) {
+      return { it->second, i };
+    }
+    table.emplace(v, i);
+  }
+  std::unreachable();
+  return {};
+}
+
+std::vector<int> unordered_flat_map(const std::vector<int>& nums, int target) noexcept
+{
+  const auto data = nums.data();
+  const auto size = static_cast<int>(nums.size());
+  boost::unordered_flat_map<int, int> table;
   table.reserve(static_cast<std::size_t>(size));
   table.emplace(nums[0], 0);
   for (auto i = 1; i < size; i++) {
@@ -156,7 +177,7 @@ std::vector<int> benchmark(std::size_t size, int target)
 
 }  // namespace hash_table::two_sum
 
-#if ENABLE_TESTS
+#if ENABLE_TESTS || 1
 
 TEST_CASE("hash_table::two_sum::simple")
 {
@@ -185,6 +206,15 @@ TEST_CASE("hash_table::two_sum::flat_map")
   REQUIRE(flat_map(hash_table::two_sum::benchmark(5, 6), 6) == std::vector{ 2, 3 });
 }
 
+TEST_CASE("hash_table::two_sum::unordered_flat_map")
+{
+  using namespace hash_table::two_sum;
+  REQUIRE(unordered_flat_map({ 2, 7, 11, 15 }, 9) == std::vector{ 0, 1 });
+  REQUIRE(unordered_flat_map({ 3, 2, 4 }, 6) == std::vector{ 1, 2 });
+  REQUIRE(unordered_flat_map({ 3, 3 }, 6) == std::vector{ 0, 1 });
+  REQUIRE(unordered_flat_map(hash_table::two_sum::benchmark(5, 6), 6) == std::vector{ 2, 3 });
+}
+
 TEST_CASE("hash_table::two_sum::flat_multimap")
 {
   using namespace hash_table::two_sum;
@@ -205,7 +235,7 @@ TEST_CASE("hash_table::two_sum::flat_multimap_lower_bound")
 
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS
+#if ENABLE_BENCHMARKS || 1
 
 static void hash_table_two_sum_simple(benchmark::State& state)
 {
@@ -245,6 +275,19 @@ static void hash_table_two_sum_flat_map(benchmark::State& state)
 }
 
 BENCHMARK(hash_table_two_sum_flat_map)->Args({ 100'000, 5'000 });
+
+static void hash_table_two_sum_unordered_flat_map(benchmark::State& state)
+{
+  const auto size = static_cast<std::size_t>(state.range(0));
+  const auto target = state.range(1);
+  const auto nums = hash_table::two_sum::benchmark(size, target);
+  for (auto _ : state) {
+    auto result = hash_table::two_sum::unordered_flat_map(nums, target);
+    benchmark::DoNotOptimize(result);
+  }
+}
+
+BENCHMARK(hash_table_two_sum_unordered_flat_map)->Args({ 100'000, 5'000 });
 
 static void hash_table_two_sum_flat_multimap(benchmark::State& state)
 {
