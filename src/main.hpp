@@ -4,16 +4,6 @@
 
 namespace experiments::example {
 
-// =====================================================================================================================
-// Definitions
-// =====================================================================================================================
-
-int g_number = -1;
-
-// =====================================================================================================================
-// Solutions
-// =====================================================================================================================
-
 // clang-format off
 BOOST_DEFINE_ENUM_CLASS(solution,
   simple,
@@ -23,13 +13,8 @@ BOOST_DEFINE_ENUM_CLASS(solution,
 template <solution Solution>
 int run()
 {
-  return g_number;
+  return -1;
 }
-
-// =====================================================================================================================
-// Helpers
-// =====================================================================================================================
-
 
 }  // namespace experiments::example
 
@@ -38,7 +23,9 @@ int run()
 void test()
 {
   using namespace experiments::example;
-  std::cout << run<solution::simple>() << std::endl;
+  boost::mp11::mp_for_each<boost::describe::describe_enumerators<solution>>([&](auto solution) {
+    std::cout << solution.name << ": " << run<solution.value>() << std::endl;
+  });
 }
 
 #if ENABLE_TESTS
