@@ -48,8 +48,9 @@ using experiments::example::solution;
 template <solution Solution>
 void experiments_example_run(benchmark::State& state)
 {
+  using namespace experiments::example;
   for (auto _ : state) {
-    auto result = experiments::example::run<Solution>();
+    auto result = run<Solution>();
     benchmark::DoNotOptimize(result);
   }
 }
