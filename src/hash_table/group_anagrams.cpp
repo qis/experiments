@@ -65,7 +65,7 @@ std::vector<std::vector<std::string>> run(std::vector<std::string>& strs)
 
 }  // namespace group::anagrams
 
-#if ENABLE_TESTS || 1
+#if ENABLE_TESTS
 
 TEST_CASE("group::anagrams::run")
 {
@@ -97,7 +97,7 @@ TEST_CASE("group::anagrams::run")
 
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS || 1
+#if ENABLE_BENCHMARKS
 
 using group::anagrams::solution;
 
