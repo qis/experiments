@@ -11,7 +11,8 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS
   src/binary_search/*.[hc]pp
   src/hash_table/*.[hc]pp
   src/queue_stack/*.[hc]pp
-  src/dfs_bfs/*.[hc]pp)
+  src/dfs_bfs/*.[hc]pp
+  src/sort/*.[hc]pp)
 
 add_library(objects OBJECT ${sources})
 
