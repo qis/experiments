@@ -1,34 +1,28 @@
 // https://leetcode.com/problems/valid-parentheses/
 #include <common.hpp>
+#include <algorithm>
+#include <array>
 #include <stack>
 #include <string>
 #include <vector>
 
 namespace queue_stack::valid_parentheses {
 
+constexpr auto min = std::min({ 'a', 'A', 'z', 'Z', '(', ')', '[', ']', '{', '}' });
+constexpr auto max = std::max({ 'a', 'A', 'z', 'Z', '(', ')', '[', ']', '{', '}' });
+constexpr auto open = []() noexcept {
+  std::array<char, max> table{};
+  table['('] = ')';
+  table['['] = ']';
+  table['{'] = '}';
+  return table;
+}();
+
 bool run(const std::string& s) noexcept
 {
   if (s.size() % 2 != 0) {
     return false;
   }
-  // clang-format off
-  static constexpr char open[130]{
-  //  0    1    2    3    4    5    6    7    8    9
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  //   9
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  //  19
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  //  29
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  //  39
-    ')',   0,   0,   0,   0,   0,   0,   0,   0,   0,  //  49
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  //  59
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  //  69
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  //  79
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  //  89
-      0, ']',   0,   0,   0,   0,   0,   0,   0,   0,  //  99
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  // 109
-      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  // 119
-      0,   0,   0, '}',   0,   0,   0,   0,   0,   0,  // 129
-  };
-  // clang-format on
   std::stack<char, std::vector<char>> stack;
   stack.push(0);
   for (const auto c : s) {
