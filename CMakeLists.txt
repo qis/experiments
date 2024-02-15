@@ -9,7 +9,8 @@ set_target_properties(main PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS
   src/linked_lists/*.[hc]pp
   src/binary_search/*.[hc]pp
-  src/hash_table/*.[hc]pp)
+  src/hash_table/*.[hc]pp
+  src/queue_stack/*.[hc]pp)
 
 add_library(objects OBJECT ${sources})
 
