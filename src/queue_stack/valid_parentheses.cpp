@@ -8,10 +8,8 @@
 
 namespace queue_stack::valid_parentheses {
 
-constexpr auto min = std::min({ 'a', 'A', 'z', 'Z', '(', ')', '[', ']', '{', '}' });
-constexpr auto max = std::max({ 'a', 'A', 'z', 'Z', '(', ')', '[', ']', '{', '}' });
 constexpr auto open = []() noexcept {
-  std::array<char, max> table{};
+  std::array<char, std::max({ '(', ')', '[', ']', '{', '}' })> table{};
   table['('] = ')';
   table['['] = ']';
   table['{'] = '}';
