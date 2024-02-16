@@ -2,10 +2,10 @@
 // ----------------------------------------------------------------------------------------------------
 // Benchmark                                                          Time             CPU   Iterations
 // ----------------------------------------------------------------------------------------------------
-// heap_hash_top_k_frequent_words_small<solution::simple>           579 ns          578 ns      1000000
-// heap_hash_top_k_frequent_words_small<solution::optimized>        712 ns          698 ns       896000
-// heap_hash_top_k_frequent_words_large<solution::simple>          2951 ns         2982 ns       235789
-// heap_hash_top_k_frequent_words_large<solution::optimized>       7540 ns         7324 ns        74667
+// heap_hash_top_k_frequent_words_small<solution::simple>           256 ns          251 ns      2800000
+// heap_hash_top_k_frequent_words_small<solution::optimized>        409 ns          390 ns      1723077
+// heap_hash_top_k_frequent_words_large<solution::simple>          2637 ns         2609 ns       263529
+// heap_hash_top_k_frequent_words_large<solution::optimized>       6740 ns         6627 ns        89600
 
 #include <common.hpp>
 #include <boost/describe.hpp>
@@ -67,9 +67,20 @@ std::vector<std::string> run(const std::vector<std::string>& words, int k)
 template <>
 std::vector<std::string> run<solution::optimized>(const std::vector<std::string>& words, int k)
 {
-  std::priority_queue<int> heap;
+  std::vector<int> data;
+  data.reserve(words.size());
+  using compare = std::priority_queue<int, std::vector<int>>::value_compare;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Waggressive-loop-optimizations"
+  std::priority_queue<int, std::vector<int>> heap{ compare{}, std::move(data) };
+#pragma GCC diagnostic pop
+
+  //std::priority_queue<int, std::vector<int>> heap;
+
   std::map<std::string_view, int> hashmap;
   std::vector<std::string> result;
+  result.reserve(words.size());
   for (const auto& word : words) {
     hashmap[word]++;
   }
