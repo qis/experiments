@@ -20,12 +20,20 @@ int run()
 
 #include <iomanip>
 #include <iostream>
+#include <sstream>
+
+std::string format(const auto& result)
+{
+  std::ostringstream oss;
+  oss << result;
+  return oss.str();
+}
 
 void test()
 {
   using namespace experiments::example;
   boost::mp11::mp_for_each<boost::describe::describe_enumerators<solution>>([&](auto solution) {
-    std::cout << solution.name << ": " << run<solution.value>() << std::endl;
+    std::cout << solution.name << ": " << format(run<solution.value>()) << std::endl;
   });
 }
 
@@ -36,7 +44,7 @@ TEST_CASE("experiments::example::run")
   using namespace experiments::example;
   boost::mp11::mp_for_each<boost::describe::describe_enumerators<solution>>([&](auto solution) {
     SUBCASE(solution.name);
-    REQUIRE(run<solution.value>() == -1);
+    REQUIRE(format(run<solution.value>()) == "-1");
   });
 }
 
