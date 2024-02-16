@@ -32,7 +32,7 @@ int run(const std::vector<int>& height)
 
 }  // namespace two_pointers::container_with_most_water
 
-#if ENABLE_TESTS || 1
+#if ENABLE_TESTS
 
 TEST_CASE("two_pointers::container_with_most_water::run")
 {
