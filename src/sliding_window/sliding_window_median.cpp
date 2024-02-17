@@ -32,7 +32,7 @@ std::vector<double> run(const std::vector<int>& nums, int k)
   const auto beg = nums.data();
   const auto end = beg + nums.size() - k + 1;
   std::vector<double> result;
-  result.reserve(nums.size() - (k - 1));
+  result.reserve(nums.size() - k + 1);
   const auto even = k % 2 == 0;
   const auto half = k / 2 - (even ? 1 : 0);
   for (auto it = beg; it != end; ++it) {
