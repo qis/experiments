@@ -14,7 +14,8 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS
   src/dfs_bfs/*.[hc]pp
   src/sort/*.[hc]pp
   src/heap_hash/*.[hc]pp
-  src/two_pointers/*.[hc]pp)
+  src/two_pointers/*.[hc]pp
+  src/sliding_window/*.[hc]pp)
 
 add_library(objects OBJECT ${sources})
 
