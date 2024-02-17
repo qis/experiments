@@ -191,7 +191,7 @@ TEST_CASE("sliding_window::sliding_window_median::run")
 
 #endif  // ENABLE_TESTS
 
-#if ENABLE_BENCHMARKS || 1
+#if ENABLE_BENCHMARKS
 
 using sliding_window::sliding_window_median::solution;
 
