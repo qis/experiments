@@ -40,7 +40,7 @@ bool run(TreeNode* root) noexcept
 TEST_CASE("tree::balanced_binary_tree::run")
 {
   using namespace tree::balanced_binary_tree;
-  boost::container::static_vector<TreeNode, 16> nodes;
+  boost::container::static_vector<TreeNode, 12> nodes;
 
   auto r0 = &nodes.emplace_back(3);
   r0->left = &nodes.emplace_back(9);
